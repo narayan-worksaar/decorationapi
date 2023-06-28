@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateServiceStatusTable extends Migration
+class CreateTaskTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateServiceStatusTable extends Migration
      */
     public function up()
     {
-        Schema::create('service_status', function (Blueprint $table) {
+        Schema::create('task_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('status')->enum("active","inactive")->default("active");
+            $table->string('task_name')->nullable();
+            $table->string('task_status')->enum("active","inactive")->default("active");
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateServiceStatusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('service_status');
+        Schema::dropIfExists('task_types');
     }
 }

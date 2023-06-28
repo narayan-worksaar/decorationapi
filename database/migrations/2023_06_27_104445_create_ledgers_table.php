@@ -21,10 +21,10 @@ class CreateLedgersTable extends Migration
             $table->text('description')->nullable();
             $table->bigInteger('service_id')->unsigned()->nullable();
             $table->foreign('service_id')->references('id')->on('services')->onUpdate('cascade');
-            $table->bigInteger('client_id')->unsigned()->nullable();
-            $table->foreign('client_id')->references('id')->on('clients')->onUpdate('cascade');
             $table->bigInteger('dealer_id')->unsigned()->nullable();
             $table->foreign('dealer_id')->references('id')->on('users')->onUpdate('cascade');
+            $table->bigInteger('agent_id')->unsigned()->nullable();
+            $table->foreign('agent_id')->references('id')->on('users')->onUpdate('cascade');
             $table->timestamps();
         });
     }

@@ -23,7 +23,7 @@ class AuthController extends Controller
             "name" => "required|string|min:2|max:100",
             "email" => "required|email|unique:users",
             "password" => "required|confirmed|min: 8",
-            
+            "mobile_number" => "required|min:10|numeric",
         ]);
 
         if($validator->fails()){
@@ -34,6 +34,8 @@ class AuthController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
+        $user->mobile_number = $request->mobile_number;
+        $user->user_type_id = $request->user_type_id;
         $user->save();
         
         if ($this->token) {

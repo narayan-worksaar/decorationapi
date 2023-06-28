@@ -24,7 +24,17 @@ class CreateUsersTable extends Migration
             $table->string('alternate_mobile_number')->nullable();
             $table->bigInteger('user_type_id')->unsigned();
             $table->foreign('user_type_id')->references('id')->on('user_type')->onUpdate('cascade');
-            // $table->enum('type', ['Admin', 'Dealer', 'Technician'])->default('Dealer');
+
+            $table->string('bank_name')->nullable();
+            $table->string('branch_name')->nullable();
+            $table->string('account_number')->nullable();
+            $table->string('total_work_experience')->nullable();
+            $table->bigInteger('vehicle_type_id')->unsigned()->nullable();
+            $table->foreign('vehicle_type_id')->references('id')->on('vehicles')->onUpdate('cascade');
+            $table->string('aadhaar_card')->nullable();
+            $table->string('driving_license')->nullable();
+            $table->string('voter_id_card')->nullable();
+            
             $table->string('status')->enum("active","inactive")->default("active");
             $table->rememberToken();
             $table->timestamps();
