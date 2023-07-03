@@ -38,3 +38,5 @@ Route::group([
 });
 
 Route::get("user-types", [HomeController::class, "user_types"]);
+Route::get("on-boarding", [HomeController::class, "on_boarding"]);
+Route::post("forgot-password", [HomeController::class, "forgot_password"]);

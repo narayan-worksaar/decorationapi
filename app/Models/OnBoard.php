@@ -5,11 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserType extends Model
+class OnBoard extends Model
 {
     use HasFactory;
-    protected $table ="user_type";
+    use HasFactory;
+    protected $table ="onboards";
     protected $fillable = [
-        'image'
+        'image',
+        'title',
+        'sub_title',
+        'more_services',
+        'status',
     ];
 }
