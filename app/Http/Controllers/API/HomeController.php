@@ -47,10 +47,12 @@ class HomeController extends Controller
            $data['title'] = 'Password Reset';
            $data['body'] = 'Please click on below link to reset your password.';
            
-           Mail::send('forgetPasswordMail',['data'=>$data], function($message)use ($data){
+           Mail::send('mail.forgetPasswordMail',['data'=>$data], function($message)use ($data){
             $message->to($data['email'])
             ->subject($data['title']);
            });
+
+           
 
            $dataTime = Carbon::now()->format('Y-m-d H:i:s');
            PasswordReset::updateOrCreate(

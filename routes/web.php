@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
+
+Route::get("/reset-password", [ResetPasswordController::class, "reset_password"]);
+Route::post("/save-new-password", [ResetPasswordController::class, "save_new_password"])->name('save_new_password');
