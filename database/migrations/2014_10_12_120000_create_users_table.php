@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('mobile_number')->nullable();
             $table->string('alternate_mobile_number')->nullable();
-            $table->bigInteger('user_type_id')->unsigned();
+            $table->bigInteger('user_type_id')->unsigned()->nullable();
             $table->foreign('user_type_id')->references('id')->on('user_type')->onUpdate('cascade');
 
             $table->string('bank_name')->nullable();

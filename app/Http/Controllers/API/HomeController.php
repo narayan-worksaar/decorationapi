@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL; 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
@@ -75,9 +76,41 @@ class HomeController extends Controller
             ],200);
           }
         }catch(\Exception $e){
-           print_r($e);
+           echo $e;
         }
        
+    }
+
+    public function update_role(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "user_type_id" => "required",
+           
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+    
+        $roleUpdate = User::find($request->id);
+        
+        if(!$roleUpdate){
+
+            return response()->json([
+                "message" => "Data not found.",
+            ],403);
+
+        }
+
+        $roleUpdate->user_type_id = $request->user_type_id;
+        $roleUpdate->save();
+        
+        return response()->json([
+            "message" => "Roll updated successfully!",
+            "status" => 200,
+            // "item" =>$roleUpdate
+        ],200);
+
     }
 
 
