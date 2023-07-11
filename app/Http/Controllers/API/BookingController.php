@@ -46,7 +46,7 @@ class BookingController extends Controller
         $columnsInfo = [];
         foreach ($tableColumns as $column) {
               // Skip 'id', 'created_at', and 'updated_at' fields
-        if ($column === 'id' || $column === 'created_at' || $column === 'updated_at') {
+        if ($column === 'id' || $column === 'service_code' || $column === 'status' || $column === 'slug' || $column === 'meta_data' || $column === 'created_at' || $column === 'updated_at') {
             continue;
         }
             $columnType = $this->getColumnType('services', $column);
