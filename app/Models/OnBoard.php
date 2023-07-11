@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class OnBoard extends Model
 {
     use HasFactory;
-    use HasFactory;
     protected $table ="onboards";
     protected $fillable = [
         'image',

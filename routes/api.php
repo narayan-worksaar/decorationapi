@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\BookingController;
 use App\Http\Controllers\API\HomeController;
 
 /*
@@ -34,6 +35,8 @@ Route::group([
     Route::post("logout", [AuthController::class, "logout"]);
     Route::post("refresh", [AuthController::class, "refresh"]);
    
+    Route::get("all-service-booking-fields", [BookingController::class, "all_service_booking_fields"]);
+    Route::post("store-service-booking", [BookingController::class, "store_service_booking"]);
     
 });
 
