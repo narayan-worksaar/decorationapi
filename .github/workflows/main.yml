@@ -17,4 +17,4 @@ jobs:
         server: ftp.worksaar.com
         username: laravelcicd@theinstallersapi.worksaar.com
         password: Yy6mT(uCs)&}
-        server-dir: /theinstallersapi.worksaar.com
+        server-dir: /theinstallersapi.worksaar.com/
