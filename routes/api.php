@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BookingController;
 use App\Http\Controllers\API\HomeController;
+use App\Http\Controllers\API\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,9 @@ Route::group([
    
     Route::get("all-service-booking-fields", [BookingController::class, "all_service_booking_fields"]);
     Route::post("store-service-booking", [BookingController::class, "store_service_booking"]);
+    Route::get("task-type", [BookingController::class, "task_type"]);
+
+    Route::post("update-dealer-details", [UserController::class, "update_dealer_details"]);
     
 });
 
@@ -44,3 +48,4 @@ Route::get("user-types", [HomeController::class, "user_types"]);
 Route::get("on-boarding", [HomeController::class, "on_boarding"]);
 Route::post("forgot-password", [HomeController::class, "forgot_password"]);
 Route::post("update-role", [HomeController::class, "update_role"]);
+Route::get("get-service-booking-data", [HomeController::class, "get_service_booking_data"]);

@@ -7,6 +7,7 @@ use App\Models\OnBoard;
 use Illuminate\Http\Request;
 use App\Models\UserType;
 use App\Models\PasswordReset;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL; 
@@ -111,6 +112,15 @@ class HomeController extends Controller
             // "item" =>$roleUpdate
         ],200);
 
+    }
+
+    public function get_service_booking_data(){
+    
+        $usertypedata = Service::get();
+        return response()->json([
+            "status" => 200,
+            "data" => $usertypedata
+        ],200);
     }
 
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Service;
+use App\Models\TaskType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +47,7 @@ class BookingController extends Controller
         $columnsInfo = [];
         foreach ($tableColumns as $column) {
               // Skip 'id', 'created_at', and 'updated_at' fields
-        if ($column === 'id' || $column === 'service_code' || $column === 'status' || $column === 'slug' || $column === 'meta_data' || $column === 'created_at' || $column === 'updated_at') {
+        if ($column === 'id' || $column === 'service_code' || $column === 'status' || $column === 'slug' || $column === 'meta_data' || $column === 'image' || $column === 'client_alternate_mobile_number' || $column === 'date_time' || $column === 'task_type_id' || $column === 'measurement' || $column === 'descriptions' || $column === 'action_type_id' || $column === 'assigned_agent_id' || $column === 'dealer_id' || $column === 'service_charge' || $column === 'created_at' || $column === 'updated_at') {
             continue;
         }
             $columnType = $this->getColumnType('services', $column);
@@ -101,6 +102,15 @@ class BookingController extends Controller
         ], 200);
 
       
+    }
+
+    public function task_type(){
+    
+        $tasktypedata = TaskType::select('id','task_name','task_status')->where('task_status','active')->get();
+        return response()->json([
+            "status" => 200,
+            "items" => $tasktypedata
+        ],200);
     }
 
 }
