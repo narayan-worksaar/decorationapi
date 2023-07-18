@@ -14,7 +14,7 @@ jobs:
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@4.0.0
       with:
-        server: ftp.worksaar.com
-        username: laravelcicd@theinstallersapi.worksaar.com
-        password: Yy6mT(uCs)&}
-        server-dir: /
+        # server: ftp.worksaar.com
+        # username: laravelcicd@theinstallersapi.worksaar.com
+        # password: Yy6mT(uCs)&}
+        # server-dir: /
