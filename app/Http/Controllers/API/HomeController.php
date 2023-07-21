@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Gender;
 use App\Models\OnBoard;
 use Illuminate\Http\Request;
 use App\Models\UserType;
@@ -120,6 +121,15 @@ class HomeController extends Controller
         return response()->json([
             "status" => 200,
             "data" => $usertypedata
+        ],200);
+    }
+
+    public function gender(){
+    
+        $genderdata = Gender::select('id','name')->get();
+        return response()->json([
+            "status" => 200,
+            "items" => $genderdata
         ],200);
     }
 

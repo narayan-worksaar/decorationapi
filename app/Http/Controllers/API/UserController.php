@@ -61,6 +61,13 @@ class UserController extends Controller
         $dealerUpdate->mobile_number = $request->mobile_number;
         $dealerUpdate->alternate_mobile_number = $request->alternate_mobile_number;
         
+        $dealerUpdate->gender_id = $request->gender_id;
+        $dealerUpdate->date_of_birth = $request->date_of_birth;
+        $dealerUpdate->address = $request->address;
+        $dealerUpdate->landmark = $request->landmark;
+        $dealerUpdate->city = $request->city;
+        $dealerUpdate->state = $request->state;
+        $dealerUpdate->pin_code = $request->pin_code;
         
         $dealerUpdate->save();
         

@@ -113,4 +113,27 @@ class BookingController extends Controller
         ],200);
     }
 
+    public function all_measurement_details_fields(){
+
+        $tableColumns = Schema::getColumnListing('measurement_details');
+        rsort($tableColumns);
+        $columnsInfo = [];
+        foreach ($tableColumns as $column) {
+              // Skip 'id', 'created_at', and 'updated_at' fields
+        if ($column === 'id' || $column === 'service_id' || $column === 'task_type_id' || $column === 'created_at' || $column === 'updated_at') {
+            continue;
+        }
+            $columnType = $this->getColumnType('measurement_details', $column);
+            $columnsInfo[] = [
+                'field_name' => $column,
+                'type' => $columnType,
+            ];
+        }
+        return response()->json([
+            "status" => 200,
+            "fields" => $columnsInfo
+        ], 200);
+       
+    }
+
 }

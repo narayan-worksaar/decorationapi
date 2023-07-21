@@ -22,7 +22,7 @@ class CreateServicesTable extends Migration
             $table->string('client_mobile_number')->nullable();
             $table->string('client_alternate_mobile_number')->nullable();
 
-            $table->dateTime('date_time')->nullable();
+            $table->string('date_time')->nullable();
             $table->bigInteger('task_type_id')->unsigned()->nullable();
             $table->foreign('task_type_id')->references('id')->on('task_types')->onUpdate('cascade');
             $table->text('measurement')->nullable();

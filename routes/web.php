@@ -22,5 +22,10 @@ Route::get("/reset-password", [ResetPasswordController::class, "reset_password"]
 Route::post("/save-new-password", [ResetPasswordController::class, "save_new_password"])->name('save_new_password');
 Route::get('/linkstorage', function () {
     Artisan::call('storage:link');
-    return "successfull";
+    return "successfull storage link";
+});
+
+Route::get('/migratetable', function () {
+    Artisan::call('migrate');
+    return "successfull migrate";
 });
