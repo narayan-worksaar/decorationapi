@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\InstallationDetail;
+use App\Models\MeasurementDetail;
 use App\Models\Service;
 use App\Models\TaskType;
 use Illuminate\Http\Request;
@@ -80,29 +82,75 @@ class BookingController extends Controller
 
         return null;
     }
+ 
 
+    
+    
     public function store_service_booking(Request $request)
     {
-      
+        
         $addNewService = new Service();
-        $addNewService->fill($request->all());
+        $addNewService->fill($request->except('measure','install'));
         $addNewService->save();
 
-        // Dynamically set the service_code
         $currentYear = date('Y');
         $idNumber = $addNewService->id;
         $addNewService->service_code = "SCode-{$currentYear}-{$idNumber}";
+        $addNewService->created_by_user_id = auth()->id();
+        
         $addNewService->save();
-       
-        return response()->json([
-            "message" => "New service booking is successfull!",
-            "status" => 200,
-            // "newService" => $addNewService,
-            
-        ], 200);
 
-      
+        
+        if ($request->has('measure')) {
+            $measurements = $request->input('measure');
+            // echo "<pre>";
+            // print_r($measurements);
+            // die;
+
+            foreach ($measurements as $measurement) {
+                $measure = new MeasurementDetail();
+                $measure->service_id = $addNewService->id; 
+                $measure->task_type_id = $addNewService->task_type_id; 
+                $measure->created_by_user_id = $addNewService->created_by_user_id; 
+                $measure->no_of_rolls_box_sqft = $measurement['no_of_rolls_box_sqft'];
+                $measure->no_of_surface = $measurement['no_of_surface'];
+                $measure->surface_details = $measurement['surface_details'];
+                $measure->surface_condition_status = $measurement['surface_condition_status'];
+                $measure->material_code = $measurement['material_code'];
+                $measure->type_of_material = $measurement['type_of_material'];
+                $measure->remarks = $measurement['remarks'];
+                $measure->save();
+            }
+        }
+
+        if ($request->has('install')) {
+            $installations = $request->input('install');
+        
+            foreach ($installations as $installation) {
+                $instal = new InstallationDetail();
+                $instal->service_id = $addNewService->id; 
+                $instal->task_type_id = $addNewService->task_type_id; 
+                $instal->created_by_user_id = $addNewService->created_by_user_id; 
+                $instal->no_of_rolls_box_sqft = $installation['no_of_rolls_box_sqft'];
+                $instal->no_of_surface = $installation['no_of_surface'];
+                $instal->surface_details = $installation['surface_details'];
+                $instal->surface_condition_status = $installation['surface_condition_status'];
+                $instal->material_code = $installation['material_code'];
+                $instal->type_of_material = $installation['type_of_material'];
+                $instal->remarks = $installation['remarks'];
+                $instal->save();
+            }
+        }
+
+        return response()->json([
+            "message" => "New service booking is successful!",
+            "status" => 200,
+        ], 200);
     }
+    
+
+        
+
 
     public function task_type(){
     
@@ -116,11 +164,12 @@ class BookingController extends Controller
     public function all_measurement_details_fields(){
 
         $tableColumns = Schema::getColumnListing('measurement_details');
-        rsort($tableColumns);
+        // rsort($tableColumns);
         $columnsInfo = [];
         foreach ($tableColumns as $column) {
               // Skip 'id', 'created_at', and 'updated_at' fields
-        if ($column === 'id' || $column === 'service_id' || $column === 'task_type_id' || $column === 'created_at' || $column === 'updated_at') {
+        if ($column === 'id' || $column === 'service_id' || $column === 'task_type_id' || $column === 'surface_details' || $column === 'surface_condition_status' || $column === 'material_code' || $column === 'type_of_material' || $column === 'remarks' || $column === 'created_by_user_id' || $column === 'created_at' || $column === 'updated_at') {
+            
             continue;
         }
             $columnType = $this->getColumnType('measurement_details', $column);
@@ -134,6 +183,23 @@ class BookingController extends Controller
             "fields" => $columnsInfo
         ], 200);
        
+    }
+
+    public function all_pending_booking(Request $request){
+    
+        $all_on_pending_booking = Service::
+        orderBy('id', 'DESC')
+        ->where('created_by_user_id', auth()->id())
+        ->where('status','pending')
+        ->with('measurements_details')
+        ->with('installation_details')
+        ->with('tasktype')
+        ->paginate(10);
+
+        return response()->json([
+            "status" => 200,
+            "items" => $all_on_pending_booking
+        ],200);
     }
 
 }

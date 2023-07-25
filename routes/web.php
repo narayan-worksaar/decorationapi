@@ -29,3 +29,8 @@ Route::get('/migratetable', function () {
     Artisan::call('migrate');
     return "successfull migrate";
 });
+
+Route::get('/rollbackstepone', function () {
+    Artisan::call('migrate:rollback', ['--step' => 1]);
+    return "successfully rolled back one step";
+});
