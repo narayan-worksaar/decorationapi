@@ -25,7 +25,6 @@ class UserController extends Controller
         $validator = Validator::make($request->all(),[
             'image' => 'mimes:jpeg,png,jpg,gif,svg|max:1024',
             "name" => "required",
-            "email" => "required",
             "mobile_number" => "required",
         ]);
 
@@ -57,7 +56,6 @@ class UserController extends Controller
         }
 
         $dealerUpdate->name = $request->name;
-        $dealerUpdate->email = $request->email;
         $dealerUpdate->mobile_number = $request->mobile_number;
         $dealerUpdate->alternate_mobile_number = $request->alternate_mobile_number;
         
