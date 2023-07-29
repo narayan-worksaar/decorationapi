@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\City;
+use App\Models\State;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -75,5 +77,35 @@ class UserController extends Controller
             // "item" =>$dealerUpdate
         ],200);
 
+    }
+
+    public function all_states(){
+    
+        $all_states = State::select('id','state_name')->where('status','active')->get();
+        return response()->json([
+            "status" => 200,
+            "items" => $all_states
+        ],200);
+    }
+
+    public function state_wise_cities(Request $request){
+        
+        $validator = Validator::make($request->all(),[
+            "state_id" => "required|numeric",
+            
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+    
+        $all_cities = City::where('state_id',$request->state_id)
+        ->select('id','state_id','city_name')
+        ->where('status','active')
+        ->get();
+        return response()->json([
+            "status" => 200,
+            "items" => $all_cities
+        ],200);
     }
 }
