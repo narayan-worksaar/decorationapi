@@ -19,8 +19,8 @@ class AddGenderToUsersTable extends Migration
             $table->string('date_of_birth')->nullable();
             $table->text('address')->nullable();
             $table->string('landmark')->nullable();
-            $table->string('city')->nullable();
-            $table->string('state')->nullable();
+            $table->bigInteger('city')->nullable();
+            $table->bigInteger('state')->nullable();
             $table->string('pin_code')->nullable();
             
         });
