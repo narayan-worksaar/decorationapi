@@ -49,7 +49,14 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if ($token = $this->guard()->attempt($credentials)) {
-            return $this->respondWithToken($token);
+            // Check if the user's status is "active" before allowing them to login
+            $user = $this->guard()->user();
+            if ($user->status === 'active') {
+                return $this->respondWithToken($token);
+            } else {
+                return response()->json(['error' => 'Your account is not active.'], 401);
+            }
+            
         }
 
         return response()->json(['error' => 'Unauthorized'], 401);

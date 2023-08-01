@@ -35,7 +35,7 @@ class CreateUsersTable extends Migration
             $table->string('driving_license')->nullable();
             $table->string('voter_id_card')->nullable();
             
-            $table->string('status')->enum("active","inactive")->default("active");
+            $table->string('status')->enum("active","inactive")->default("inactive");
             $table->rememberToken();
             $table->timestamps();
         });
