@@ -35,7 +35,7 @@ class AuthController extends Controller
         $user->company_name = $request->company_name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
-        // $user->mobile_number = $request->mobile_number;
+        $user->user_type_id = $request->user_type_id;
         $user->save();
         
         if ($this->token) {
