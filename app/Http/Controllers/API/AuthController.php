@@ -20,7 +20,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            "name" => "required|string|min:2|max:100",
+            // "name" => "required|string|min:2|max:100",
             "email" => "required|email|unique:users",
             "password" => "required|confirmed|min: 8",
             // "mobile_number" => "required|min:10|numeric",
@@ -32,6 +32,7 @@ class AuthController extends Controller
 
         $user = new User();
         $user->name = $request->name;
+        $user->company_name = $request->company_name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
         // $user->mobile_number = $request->mobile_number;
