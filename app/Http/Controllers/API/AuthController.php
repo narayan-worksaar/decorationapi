@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Mail\RegisterUserMail;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -17,30 +19,37 @@ class AuthController extends Controller
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
+   
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(),[
-            // "name" => "required|string|min:2|max:100",
-            "email" => "required|email|unique:users",
-            "password" => "required|confirmed|min: 8",
-            // "mobile_number" => "required|min:10|numeric",
-        ]);
+        try{
+            $validator = Validator::make($request->all(),[
+                "email" => "required|email|unique:users",
+                "password" => "required|confirmed|min: 8",
+            ]);
+    
+            if($validator->fails()){
+                return response()->json($validator->errors(), 400);
+            }
+    
+            $user = new User();
+            $user->name = $request->name;
+            $user->company_name = $request->company_name;
+            $user->email = $request->email;
+            $user->password = bcrypt($request->password);
+            $user->user_type_id = $request->user_type_id;
+            $user->save();
 
-        if($validator->fails()){
-            return response()->json($validator->errors(), 400);
+            $mailData = [
+                'name' => $request->name,
+                'company_name' => $request->company_name,
+                'email' => $request->email,
+            ];
+            Mail::to('paswan.narayan@gmail.com')->send(new RegisterUserMail($mailData));
+            return response()->json(['success' => 'Mail sent!.'], 200);
+        }catch (\Throwable $th){
+            return response()->json(['error' => 'Something went wrong!.'], 401);
         }
-
-        $user = new User();
-        $user->name = $request->name;
-        $user->company_name = $request->company_name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
-        $user->user_type_id = $request->user_type_id;
-        $user->save();
-        
-        // if ($this->token) {
-        //     return $this->login($request);
-        // }
       
     }
 

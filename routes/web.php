@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ResetPasswordController;
+use App\Mail\RegisterUserMail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,4 +34,9 @@ Route::get('/migratetable', function () {
 Route::get('/rollbackstepone', function () {
     Artisan::call('migrate:rollback', ['--step' => 1]);
     return "successfully rolled back one step";
+});
+
+
+Route::get('/registerMail', function () {
+    return new RegisterUserMail();
 });
