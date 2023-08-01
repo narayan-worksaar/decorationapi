@@ -38,9 +38,9 @@ class AuthController extends Controller
         $user->user_type_id = $request->user_type_id;
         $user->save();
         
-        if ($this->token) {
-            return $this->login($request);
-        }
+        // if ($this->token) {
+        //     return $this->login($request);
+        // }
       
     }
 
