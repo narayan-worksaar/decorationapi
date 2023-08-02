@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\InstallationDetail;
 use App\Models\MeasurementDetail;
+use App\Models\PaymentMode;
 use App\Models\Service;
 use App\Models\TaskType;
 use Illuminate\Http\Request;
@@ -84,8 +85,26 @@ class BookingController extends Controller
     }
  
 
-    
-    
+    public function store_service_booking(Request $request)
+    {
+        $existingRowsCount = Service::count();
+        $idNumber = $existingRowsCount + 1;
+        
+        $addNewService = new Service();
+        $addNewService->fill($request->all()); 
+        $addNewService->save();
+
+        $currentYear = date('Y');
+        
+        $addNewService->service_code = "SCode-{$currentYear}-{$idNumber}";
+        $addNewService->created_by_user_id = auth()->id();
+        $addNewService->save();
+        return response()->json([
+            "message" => "New service booking is successful!",
+            "status" => 200,
+        ], 200);
+    }
+    /*
     public function store_service_booking(Request $request)
     {
         
@@ -147,7 +166,7 @@ class BookingController extends Controller
             "status" => 200,
         ], 200);
     }
-    
+    */
 
         
 
@@ -199,6 +218,15 @@ class BookingController extends Controller
         return response()->json([
             "status" => 200,
             "items" => $all_on_pending_booking
+        ],200);
+    }
+
+    public function payment_mode(){
+    
+        $paymentMode = PaymentMode::select('id','payment_method_name')->where('status','active')->get();
+        return response()->json([
+            "status" => 200,
+            "items" => $paymentMode
         ],200);
     }
 
