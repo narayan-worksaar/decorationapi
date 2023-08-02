@@ -38,5 +38,10 @@ Route::get('/rollbackstepone', function () {
 
 
 Route::get('/registerMail', function () {
-    return new RegisterUserMail();
+    // return new RegisterUserMail();
+});
+
+
+Route::group(['prefix' => 'admin'], function () {
+    Voyager::routes();
 });

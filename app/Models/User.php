@@ -9,7 +9,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements JWTSubject
+class User extends \TCG\Voyager\Models\User implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -29,9 +29,12 @@ class User extends Authenticatable implements JWTSubject
     }
     
     protected $fillable = [
+        'role_id',    
         'image',
         'name',
         'email',
+        'avatar',
+        'email_verified_at',
         'password',
         'mobile_number',
         'alternate_mobile_number',
@@ -44,7 +47,16 @@ class User extends Authenticatable implements JWTSubject
         'aadhaar_card',
         'driving_license',
         'voter_id_card',
-        'status'
+        'status',
+        'remember_token',
+        'gender_id',
+        'date_of_birth',
+        'address',
+        'landmark',
+        'city',
+        'state',
+        'pin_code',
+        'company_name'
     ];
 
     /**
