@@ -41,7 +41,7 @@ Route::get('/registerMail', function () {
     // return new RegisterUserMail();
 });
 
-
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
+

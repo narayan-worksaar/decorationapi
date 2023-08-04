@@ -77,4 +77,6 @@ class User extends \TCG\Voyager\Models\User implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+   
 }

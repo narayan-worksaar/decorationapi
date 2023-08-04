@@ -22,6 +22,8 @@ class AuthController extends Controller
    
     public function register(Request $request)
     {
+      
+
         try{
             $validator = Validator::make($request->all(),[
                 "email" => "required|email|unique:users",
@@ -36,17 +38,24 @@ class AuthController extends Controller
             $user->name = $request->name;
             $user->company_name = $request->company_name;
             $user->email = $request->email;
+            $user->mobile_number = $request->mobile_number;
+            $user->aadhaar_card = $request->aadhaar_card;
             $user->password = bcrypt($request->password);
-            $user->user_type_id = $request->user_type_id;
+            $user->role_id = $request->user_type_id;
+            if($request->user_type_id == 5){
+                $user->status = 'active';
+                $user->employee_of_dealer_id = $request->employee_of_dealer_id;
+            }
             $user->save();
 
-            $mailData = [
-                'name' => $request->name,
-                'company_name' => $request->company_name,
-                'email' => $request->email,
-            ];
-            Mail::to('paswan.narayan@gmail.com')->send(new RegisterUserMail($mailData));
-            return response()->json(['success' => 'Mail sent!.'], 200);
+          
+            // $mailData = [
+            //     'name' => $request->name,
+            //     'company_name' => $request->company_name,
+            //     'email' => $request->email,
+            // ];
+            // Mail::to('paswan.narayan@gmail.com')->send(new RegisterUserMail($mailData));
+            // return response()->json(['success' => 'Mail sent!.'], 200);
         }catch (\Throwable $th){
             return response()->json(['error' => 'Something went wrong!.'], 401);
         }
