@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\Voyager\UserController;
+use App\Mail\ActivationAccountMail;
 use App\Mail\RegisterUserMail;
 use Illuminate\Support\Facades\Route;
 
@@ -38,10 +40,11 @@ Route::get('/rollbackstepone', function () {
 
 
 Route::get('/registerMail', function () {
-    // return new RegisterUserMail();
+    return new ActivationAccountMail();
 });
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
+    Route::post("/update-user-status", [UserController::class, "update_user_status"])->name("update-user-status");
 });
 

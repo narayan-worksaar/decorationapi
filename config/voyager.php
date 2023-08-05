@@ -255,4 +255,8 @@ return [
            ],
        ]*/
     ],
+
+    'hidden_menu_items' => [
+        'tools',
+    ],
 ];

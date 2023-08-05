@@ -47,15 +47,15 @@ class AuthController extends Controller
                 $user->employee_of_dealer_id = $request->employee_of_dealer_id;
             }
             $user->save();
-
+            
           
-            // $mailData = [
-            //     'name' => $request->name,
-            //     'company_name' => $request->company_name,
-            //     'email' => $request->email,
-            // ];
-            // Mail::to('paswan.narayan@gmail.com')->send(new RegisterUserMail($mailData));
-            // return response()->json(['success' => 'Mail sent!.'], 200);
+            $mailData = [
+                'name' => $request->name,
+                'company_name' => $request->company_name,
+                'email' => $request->email,
+            ];
+            Mail::to('paswan.narayan@gmail.com')->send(new RegisterUserMail($mailData));
+            return response()->json(['success' => 'Mail sent!.'], 200);
         }catch (\Throwable $th){
             return response()->json(['error' => 'Something went wrong!.'], 401);
         }
