@@ -17,7 +17,7 @@
 
 <br>
 <div class="image-container">
-    <img src="{{ asset('storage/images/righttick.jpeg') }}" alt="Right Tick" style="width: 50px; height: 50px;">
+    <img src="{{ asset('public/storage/images/righttick.jpeg') }}" alt="Right Tick" style="width: 50px; height: 50px;">
 </div>
 
 Thanks,<br>
