@@ -288,7 +288,7 @@ class UserController extends VoyagerBaseController
 
     public function edit(Request $request, $id)
     {
-        dd('edit');
+        
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -400,7 +400,7 @@ class UserController extends VoyagerBaseController
     // Add a new item of our Data Type BRE(A)D
     //
     //****************************************
-
+    /*
     public function create(Request $request)
     {
         $slug = $this->getSlug($request);
@@ -435,6 +435,7 @@ class UserController extends VoyagerBaseController
 
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable'));
     }
+    */
 
     /**
      * POST BRE(A)D - Store data.

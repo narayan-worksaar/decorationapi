@@ -193,7 +193,7 @@ return [
     'additional_js' => [
         //'js/custom.js',
     ],
-
+    
     'googlemaps' => [
         'key'    => env('GOOGLE_MAPS_KEY', ''),
         'center' => [
@@ -202,7 +202,7 @@ return [
         ],
         'zoom' => env('GOOGLE_MAPS_DEFAULT_ZOOM', 11),
     ],
-
+    
     /*
     |--------------------------------------------------------------------------
     | Model specific settings
