@@ -400,7 +400,7 @@ class UserController extends VoyagerBaseController
     // Add a new item of our Data Type BRE(A)D
     //
     //****************************************
-    /*
+    
     public function create(Request $request)
     {
         $slug = $this->getSlug($request);
@@ -435,7 +435,7 @@ class UserController extends VoyagerBaseController
 
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable'));
     }
-    */
+    
 
     /**
      * POST BRE(A)D - Store data.
@@ -456,7 +456,7 @@ class UserController extends VoyagerBaseController
         // Validate fields with ajax
         $val = $this->validateBread($request->all(), $dataType->addRows)->validate();
         $data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());
-
+        
         event(new BreadDataAdded($dataType, $data));
 
         if (!$request->has('_tagging')) {
@@ -1023,6 +1023,7 @@ class UserController extends VoyagerBaseController
         $statuesUpdate = User::find($request->id);
         $statuesUpdate->status = $request->status;
         $statuesUpdate->save();
+       /*
         if($statuesUpdate->status == 'active'){
             $mailData = [
                 'name' => $statuesUpdate->name,
@@ -1032,9 +1033,7 @@ class UserController extends VoyagerBaseController
             Mail::to($statuesUpdate->email)->send(new ActivationAccountMail($mailData));
             return response()->json(['success' => 'Mail sent!.'], 200);
         }
-       
-
-         
+        */
         
     }
 }

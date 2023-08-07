@@ -21,8 +21,5 @@ class DatabaseSeeder extends Seeder
         $this->call(GenderSeeder::class);
         $this->call(TaskTypeSeeder::class);
         
-        
-        
-        
     }
 }
