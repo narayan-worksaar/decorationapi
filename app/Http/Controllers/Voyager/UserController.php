@@ -1023,7 +1023,7 @@ class UserController extends VoyagerBaseController
         $statuesUpdate = User::find($request->id);
         $statuesUpdate->status = $request->status;
         $statuesUpdate->save();
-       /*
+       
         if($statuesUpdate->status == 'active'){
             $mailData = [
                 'name' => $statuesUpdate->name,
@@ -1033,7 +1033,7 @@ class UserController extends VoyagerBaseController
             Mail::to($statuesUpdate->email)->send(new ActivationAccountMail($mailData));
             return response()->json(['success' => 'Mail sent!.'], 200);
         }
-        */
+        
         
     }
 }
