@@ -8,6 +8,7 @@ use App\Models\MeasurementDetail;
 use App\Models\PaymentMode;
 use App\Models\Service;
 use App\Models\TaskType;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -90,6 +91,8 @@ class BookingController extends Controller
         $existingRowsCount = Service::count();
         $idNumber = $existingRowsCount + 1;
         
+        $loggedInUser = User::find(auth()->id());
+
         $addNewService = new Service();
         $addNewService->fill($request->all()); 
         $addNewService->save();
@@ -98,6 +101,11 @@ class BookingController extends Controller
         
         $addNewService->service_code = "SCode-{$currentYear}-{$idNumber}";
         $addNewService->created_by_user_id = auth()->id();
+
+        if($loggedInUser->employee_of_dealer_id != null){
+            $addNewService->employee_of = $loggedInUser->employee_of_dealer_id;
+        }
+
         $addNewService->save();
         return response()->json([
             "message" => "New service booking is successful!",
@@ -205,7 +213,8 @@ class BookingController extends Controller
     }
 
     public function all_pending_booking(Request $request){
-    
+        
+        /*
         $all_on_pending_booking = Service::
         orderBy('id', 'DESC')
         ->where('created_by_user_id', auth()->id())
@@ -214,11 +223,40 @@ class BookingController extends Controller
         ->with('installation_details')
         ->with('tasktype')
         ->paginate(10);
+           return response()->json([
+            "status" => 200,
+            "items" => $all_on_pending_booking
+        ],200);
+        */
+        // $userId = [];
+        
+        // $serviceCreatedUser = Service::
+        // where('created_by_user_id', auth()->id())
+        // ->select('created_by_user_id')
+        // ->get();
+
+        // // foreach ($serviceCreatedUser as $serviceCreated) {
+        // //     $userId []= $serviceCreated;
+        // // }
+
+        // return response()->json([
+        //     "status" => 200,
+        //     "items" => $serviceCreatedUser
+        // ],200);
+
+        $all_on_pending_booking = Service::orderBy('id', 'DESC')
+        ->where(function ($query) {
+            $query->where('created_by_user_id', auth()->id())
+              ->orWhere('employee_of', auth()->id());
+            })
+            ->where('status', 'pending')
+            ->with('tasktype')
+            ->paginate(10);
 
         return response()->json([
             "status" => 200,
             "items" => $all_on_pending_booking
-        ],200);
+        ], 200);
     }
 
     public function payment_mode(){
