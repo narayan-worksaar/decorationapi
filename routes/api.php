@@ -48,6 +48,8 @@ Route::group([
     Route::get("all-states", [UserController::class, "all_states"]);
     Route::get("state-wise-cities", [UserController::class, "state_wise_cities"]);
     
+    Route::get("get-service-details", [BookingController::class, "get_service_details"]);
+    Route::post("update-booked-service", [BookingController::class, "update_booked_service"]);
     
 });
 

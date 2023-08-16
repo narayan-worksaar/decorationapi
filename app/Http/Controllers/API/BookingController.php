@@ -213,37 +213,7 @@ class BookingController extends Controller
     }
 
     public function all_pending_booking(Request $request){
-        
-        /*
-        $all_on_pending_booking = Service::
-        orderBy('id', 'DESC')
-        ->where('created_by_user_id', auth()->id())
-        ->where('status','pending')
-        ->with('measurements_details')
-        ->with('installation_details')
-        ->with('tasktype')
-        ->paginate(10);
-           return response()->json([
-            "status" => 200,
-            "items" => $all_on_pending_booking
-        ],200);
-        */
-        // $userId = [];
-        
-        // $serviceCreatedUser = Service::
-        // where('created_by_user_id', auth()->id())
-        // ->select('created_by_user_id')
-        // ->get();
-
-        // // foreach ($serviceCreatedUser as $serviceCreated) {
-        // //     $userId []= $serviceCreated;
-        // // }
-
-        // return response()->json([
-        //     "status" => 200,
-        //     "items" => $serviceCreatedUser
-        // ],200);
-
+      
         $all_on_pending_booking = Service::orderBy('id', 'DESC')
         ->where(function ($query) {
             $query->where('created_by_user_id', auth()->id())
@@ -251,6 +221,7 @@ class BookingController extends Controller
             })
             ->where('status', 'pending')
             ->with('tasktype')
+            ->with('serviceCreator')
             ->paginate(10);
 
         return response()->json([
@@ -266,6 +237,69 @@ class BookingController extends Controller
             "status" => 200,
             "items" => $paymentMode
         ],200);
+    }
+
+    public function get_service_details(Request $request){
+        
+        $validator = Validator::make($request->all(),[
+            "service_id" => "required|numeric",
+            
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+    
+        $single_service = Service::where('id',$request->service_id)
+        ->with('tasktype')
+        ->with('serviceCreator')
+        ->with('paymentMode')
+        ->get();
+        return response()->json([
+            "status" => 200,
+            "items" => $single_service
+        ],200);
+    }
+
+    public function update_booked_service(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "task_type_id" => "required",
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+    
+        $serviceUpdate = Service::find($request->id);
+        
+        if(!$serviceUpdate){
+
+            return response()->json([
+                "message" => "Data not found.",
+            ],403);
+
+        }
+
+        $serviceUpdate->address = $request->address;
+        $serviceUpdate->client_name = $request->client_name;
+        $serviceUpdate->client_email_address = $request->client_email_address;
+        $serviceUpdate->client_mobile_number = $request->client_mobile_number;
+        $serviceUpdate->date_time = $request->date_time;
+        $serviceUpdate->task_type_id = $request->task_type_id;
+        $serviceUpdate->type_of_measurement = $request->type_of_measurement;   
+        $serviceUpdate->type_of_material = $request->type_of_material;    
+        $serviceUpdate->payment_mode_id = $request->payment_mode_id;
+        $serviceUpdate->remarks = $request->remarks;
+        $serviceUpdate->notes = $request->notes;    
+        $serviceUpdate->save();
+        
+        return response()->json([
+            "message" => "Updated successfully",
+            "status" => 200,
+            "item" =>$serviceUpdate
+        ],200);
+
     }
 
 }
