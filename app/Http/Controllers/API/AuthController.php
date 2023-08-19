@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Mail\RegisterUserMail;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Rules\UniqueMobileNumber;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
+
 
 class AuthController extends Controller
 {
@@ -24,9 +26,10 @@ class AuthController extends Controller
     {
       
 
-        try{
+        // try{
             $validator = Validator::make($request->all(),[
-                "email" => "required|email|unique:users",
+                "email" => "email|unique:users",
+                "mobile_number" => ["required", "numeric", new UniqueMobileNumber],
                 "password" => "required|confirmed|min: 8",
             ]);
     
@@ -49,6 +52,22 @@ class AuthController extends Controller
                 $dealerCompanyName = User::find($request->employee_of_dealer_id);
                 $user->company_name = $dealerCompanyName->company_name;
             }
+           
+            
+            if($request->hasFile('aadhaar_card')){
+             
+                $aadhaarImage = time()."_aadhaar".".".$request->file('aadhaar_card')->getClientOriginalExtension();
+                $request->file('aadhaar_card')->storeAs('public/images',$aadhaarImage);
+                $user->aadhaar_card = $aadhaarImage;
+            }
+
+            if($request->hasFile('driving_license')){
+             
+                $drivingImage = time()."_driving".".".$request->file('driving_license')->getClientOriginalExtension();
+                $request->file('driving_license')->storeAs('public/images',$drivingImage);
+                $user->driving_license = $drivingImage;
+            }
+            
             $user->save();
             
           
@@ -59,9 +78,9 @@ class AuthController extends Controller
             // ];
             // Mail::to('paswan.narayan@gmail.com')->send(new RegisterUserMail($mailData));
             // return response()->json(['success' => 'Mail sent!.'], 200);
-        }catch (\Throwable $th){
-            return response()->json(['error' => 'Something went wrong!.'], 401);
-        }
+        // }catch (\Throwable $th){
+        //     return response()->json(['error' => 'Something went wrong!.'], 401);
+        // }
       
     }
 

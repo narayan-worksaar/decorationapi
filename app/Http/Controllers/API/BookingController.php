@@ -302,4 +302,19 @@ class BookingController extends Controller
 
     }
 
+    public function all_assigned_service(Request $request){
+      
+        $all_assigned_service = Service::orderBy('id', 'DESC')
+        ->where('assigned_agent_id', auth()->id())
+            // ->where('status', 'pending')
+            ->with('tasktype')
+            ->with('serviceCreator')
+            ->paginate(10);
+
+        return response()->json([
+            "status" => 200,
+            "items" => $all_assigned_service
+        ], 200);
+    }
+
 }

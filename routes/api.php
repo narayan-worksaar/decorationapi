@@ -50,6 +50,8 @@ Route::group([
     
     Route::get("get-service-details", [BookingController::class, "get_service_details"]);
     Route::post("update-booked-service", [BookingController::class, "update_booked_service"]);
+
+    Route::get("all-assigned-service", [BookingController::class, "all_assigned_service"]);
     
 });
 

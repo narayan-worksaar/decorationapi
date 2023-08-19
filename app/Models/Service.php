@@ -9,7 +9,34 @@ class Service extends Model
 {
     use HasFactory;
     protected $table ="services";
-    protected $guarded = [];
+    // protected $guarded = [];
+    protected $fillable = [
+        'image',
+        'service_code',
+        'client_name',
+        'client_email_address',
+        'client_mobile_number',
+        'client_alternate_mobile_number',
+        'date_time',
+        'task_type_id',
+        'measurement',
+        'descriptions',
+        'action_type_id',
+        'assigned_agent_id',
+        'dealer_id',
+        'service_charge',
+        'status',
+        'slug',    
+        'meta_data',   
+        'remarks', 
+        'notes',    
+        'payment_mode_id',  
+        'created_by_user_id',    
+        'address',    
+        'type_of_measurement',    
+        'type_of_material',    
+        'employee_of',    
+    ];
 
     public function measurements_details() 
     {

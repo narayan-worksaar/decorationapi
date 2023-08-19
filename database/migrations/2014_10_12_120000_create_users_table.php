@@ -17,10 +17,10 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('image')->nullable();
             $table->string('name')->nullable();
-            $table->string('email')->unique();
+            $table->string('email')->nullable()->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('mobile_number')->nullable();
+            $table->string('mobile_number')->nullable()->unique();
             $table->string('alternate_mobile_number')->nullable();
             $table->bigInteger('user_type_id')->unsigned()->nullable();
             $table->foreign('user_type_id')->references('id')->on('user_type')->onUpdate('cascade');
