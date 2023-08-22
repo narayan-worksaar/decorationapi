@@ -60,43 +60,46 @@ class AuthController extends Controller
                 $user->company_name = $dealerCompanyName->company_name;
             }
            
-            
-            // if($request->hasFile('aadhaar_card')){
-             
-            //     $aadhaarImage = time()."_aadhaar".".".$request->file('aadhaar_card')->getClientOriginalExtension();
-            //     $request->file('aadhaar_card')->storeAs('public/images',$aadhaarImage);
-            //     $user->aadhaar_card = $aadhaarImage;
-            // }
-
             if ($request->hasFile('aadhaar_card')) {
                 $aadhaarImage = time() . "_aadhaar" . "." . $request->file('aadhaar_card')->getClientOriginalExtension();
-                
-              // Resize to a smaller dimension
-            $tempImage = Image::make($request->file('aadhaar_card'));
-            $tempImage->resize(800, null, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
-
-            // Resize to the final dimensions
-            $finalImage = clone $tempImage;
-            $finalImage->resize(500, null, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
-
-            // Save the final image
-            $finalImage->save(public_path('storage/images/' . $aadhaarImage), 100);
-
-            // Set the user's aadhaar_card to the image filename
-            $user->aadhaar_card = $aadhaarImage;
-
+                $originalImagePath = $request->file('aadhaar_card')->getRealPath();
+            
+                $image = Image::make($originalImagePath);
+            
+                // Check if the image size is greater than 500 KB
+                if (filesize($originalImagePath) > 500 * 1024) {
+                    // Resize the image
+                    $image->resize(500, 550, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
+            
+                // Save the image with 60% quality
+                $image->save(public_path('storage/images/' . $aadhaarImage), 60);
+            
+                $user->aadhaar_card = $aadhaarImage;
             }
+            
 
-            if($request->hasFile('driving_license')){
-             
-                $drivingImage = time()."_driving".".".$request->file('driving_license')->getClientOriginalExtension();
-                $request->file('driving_license')->storeAs('public/images',$drivingImage);
+            if ($request->hasFile('driving_license')) {
+                $drivingImage = time() . "_driving" . "." . $request->file('driving_license')->getClientOriginalExtension();
+                $originalImagePath = $request->file('driving_license')->getRealPath();
+            
+                $image = Image::make($originalImagePath);
+            
+                // Check if the image size is greater than 500 KB
+                if (filesize($originalImagePath) > 500 * 1024) {
+                    // Resize the image
+                    $image->resize(500, 550, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
+            
+                // Save the image with 60% quality
+                $image->save(public_path('storage/images/' . $drivingImage), 60);
+            
                 $user->driving_license = $drivingImage;
             }
             
