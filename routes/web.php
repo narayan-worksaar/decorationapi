@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\Voyager\ServiceController;
 use App\Http\Controllers\Voyager\UserController;
 use App\Mail\ActivationAccountMail;
 use App\Mail\RegisterUserMail;
@@ -39,12 +40,17 @@ Route::get('/rollbackstepone', function () {
 });
 
 
-Route::get('/registerMail', function () {
-    return new ActivationAccountMail();
-});
+// Route::get('/registerMail', function () {
+//     return new ActivationAccountMail();
+// });
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
     Route::post("/update-user-status", [UserController::class, "update_user_status"])->name("update-user-status");
+    Route::get("view-agent-task/{id}", [ServiceController::class, "view_agent_task"]);
+    Route::get("view-agent-task-details/{id}", [ServiceController::class, "view_agent_task_details"]);
+    
+    
 });
+
 

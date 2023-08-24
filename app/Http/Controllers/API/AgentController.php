@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Service;
 use App\Models\ServiceUpdatedByAgent;
 use App\Models\Status;
 use Illuminate\Http\Request;
@@ -37,6 +38,8 @@ class AgentController extends Controller
 
         $updateNewService = new ServiceUpdatedByAgent();
         $updateNewService->service_id = $request->service_id;
+
+     
        
         if ($request->hasFile('form')) {
             $formImage = time() . "_form" . "." . $request->file('form')->getClientOriginalExtension();
@@ -66,7 +69,11 @@ class AgentController extends Controller
         $updateNewService->created_date = $currentDateTime->toDateString();
         $updateNewService->created_time = $currentDateTime->toTimeString();
 
-       
+        if ($request->service_id != null) {
+            $serviceUpdate = Service::where('id', $request->service_id)->first();
+            $serviceUpdate->status = $request->status;
+            $serviceUpdate->save(); 
+        }
         
         $updateNewService->save();
         return response()->json([

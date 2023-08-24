@@ -104,6 +104,7 @@ class BookingController extends Controller
 
         if($loggedInUser->employee_of_dealer_id != null){
             $addNewService->employee_of = $loggedInUser->employee_of_dealer_id;
+            $addNewService->save(); 
         }
 
         $addNewService->save();
@@ -219,7 +220,7 @@ class BookingController extends Controller
             $query->where('created_by_user_id', auth()->id())
               ->orWhere('employee_of', auth()->id());
             })
-            ->where('status', 'pending')
+            ->where('status', 1)
             ->with('tasktype')
             ->with('serviceCreator')
             ->paginate(10);
@@ -306,7 +307,7 @@ class BookingController extends Controller
       
         $all_assigned_service = Service::orderBy('id', 'DESC')
         ->where('assigned_agent_id', auth()->id())
-            // ->where('status', 'pending')
+            ->where('status', 1)
             ->with('tasktype')
             ->with('serviceCreator')
             ->paginate(10);

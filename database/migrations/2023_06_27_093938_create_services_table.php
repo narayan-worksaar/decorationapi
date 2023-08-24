@@ -35,10 +35,7 @@ class CreateServicesTable extends Migration
 
             $table->bigInteger('dealer_id')->unsigned()->nullable();
             $table->foreign('dealer_id')->references('id')->on('users')->onUpdate('cascade');
-
             $table->string('service_charge')->nullable();
-
-            $table->string('status')->enum("pending","on-going","completed")->default("pending");
             $table->string('slug')->nullable();
             $table->string('meta_data')->nullable();
             $table->timestamps();

@@ -18,4 +18,19 @@ class ServiceUpdatedByAgent extends Model
         'created_date',
         'created_time',
     ];
+
+    public function serviceData() 
+    {
+        return $this->hasOne(Service::class,'id', 'service_id')->select('id','service_code','client_name');
+    }
+
+    public function statusData() 
+    {
+        return $this->hasOne(Status::class,'id', 'status')->select('id','status_list');
+    }
+    public function userData() 
+    {
+        return $this->hasOne(User::class,'id', 'created_by')->select('id','name');
+    }
+
 }
