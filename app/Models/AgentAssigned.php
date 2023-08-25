@@ -19,6 +19,6 @@ class AgentAssigned extends Model
     ];
     public function agent_name() 
     {
-        return $this->hasOne(User::class,'id', 'agent')->select('id','name');
+        return $this->hasOne(User::class,'id', 'agent')->select('id','name','avatar');
     }
 }

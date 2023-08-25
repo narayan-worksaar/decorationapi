@@ -337,4 +337,68 @@ class BookingController extends Controller
         ], 200);
     }
 
+    public function get_on_going_service_details(Request $request){
+        
+        $validator = Validator::make($request->all(),[
+            "service_id" => "required|numeric",
+            
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+    
+        $single_service = Service::where('id',$request->service_id)
+        ->with('tasktype')
+        ->with('serviceCreator')
+        ->with('paymentMode')
+        ->with('assigned_agent')
+        ->get();
+        return response()->json([
+            "status" => 200,
+            "items" => $single_service
+        ],200);
+    }
+
+    public function all_completed_booking(){
+      
+        $all_completed_booking = Service::orderBy('id', 'DESC')
+        ->where(function ($query) {
+            $query->where('created_by_user_id', auth()->id())
+              ->orWhere('employee_of', auth()->id());
+            })
+            ->where('status', 3)
+            ->with('tasktype')
+            ->with('serviceCreator')
+            ->paginate(10);
+
+        return response()->json([
+            "status" => 200,
+            "items" => $all_completed_booking
+        ], 200);
+    }
+
+    public function get_booking_completed_details(Request $request){
+        
+        $validator = Validator::make($request->all(),[
+            "service_id" => "required|numeric",
+            
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+    
+        $single_service = Service::where('id',$request->service_id)
+        ->with('tasktype')
+        ->with('serviceCreator')
+        ->with('paymentMode')
+        // ->with('assigned_agent')
+        ->get();
+        return response()->json([
+            "status" => 200,
+            "items" => $single_service
+        ],200);
+    }
+
 }
