@@ -318,4 +318,23 @@ class BookingController extends Controller
         ], 200);
     }
 
+    public function all_on_going_booking(){
+      
+        $all_on_going_booking = Service::orderBy('id', 'DESC')
+        ->where(function ($query) {
+            $query->where('created_by_user_id', auth()->id())
+              ->orWhere('employee_of', auth()->id());
+            })
+            ->where('status', 2)
+            ->with('tasktype')
+            ->with('serviceCreator')
+            ->with('assigned_agent')
+            ->paginate(10);
+
+        return response()->json([
+            "status" => 200,
+            "items" => $all_on_going_booking
+        ], 200);
+    }
+
 }

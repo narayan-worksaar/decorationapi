@@ -45,6 +45,7 @@ Route::group([
     Route::get("all-measurement-details-fields", [BookingController::class, "all_measurement_details_fields"]);
     Route::get("all-pending-booking", [BookingController::class, "all_pending_booking"]);
     Route::get("payment-mode", [BookingController::class, "payment_mode"]);
+    Route::get("all-on-going-booking", [BookingController::class, "all_on_going_booking"]);
     
     Route::get("all-states", [UserController::class, "all_states"]);
     Route::get("state-wise-cities", [UserController::class, "state_wise_cities"]);

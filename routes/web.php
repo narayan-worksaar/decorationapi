@@ -49,7 +49,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post("/update-user-status", [UserController::class, "update_user_status"])->name("update-user-status");
     Route::get("view-agent-task/{id}", [ServiceController::class, "view_agent_task"]);
     Route::get("view-agent-task-details/{id}", [ServiceController::class, "view_agent_task_details"]);
-    
+    Route::get("show-agent-list/{id}", [ServiceController::class, "show_agent_list"]);
+    Route::put("/update-agent", [ServiceController::class, "update_agent"]);
     
 });
 

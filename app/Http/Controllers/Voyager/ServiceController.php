@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Voyager;
 // use App\Http\Controllers\Controller;
 // use Illuminate\Http\Request;
 
+use App\Models\AgentAssigned;
 use App\Models\Service;
 use App\Models\ServiceUpdatedByAgent;
+use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
@@ -179,6 +181,7 @@ class ServiceController extends VoyagerBaseController
         if (view()->exists("voyager::$slug.browse")) {
             $view = "voyager::$slug.browse";
         }
+        $agentData= User::where('role_id',3)->get();
 
         return Voyager::view($view, compact(
             'actions',
@@ -195,7 +198,8 @@ class ServiceController extends VoyagerBaseController
             'defaultSearchKey',
             'usesSoftDeletes',
             'showSoftDeleted',
-            'showCheckboxColumn'
+            'showCheckboxColumn',
+            'agentData'
         ));
     }
 
@@ -220,6 +224,37 @@ class ServiceController extends VoyagerBaseController
         
         return view('vendor.voyager.services.view_agent_task_deatils', compact('agentTaskDetails'));
         
+    }
+
+    public function show_agent_list($id){
+    
+        $serviceData = Service::find($id);
+        return response()->json([
+        "status" => 200,
+        "items" => $serviceData
+        ],200);
+
+    }
+    public function update_agent (Request $request){
+        $serviceId = $request->input('ser_id');
+        $updateAgent = Service::find($serviceId);
+        $updateAgent->assigned_agent_id = $request->input('agent_id');
+        $updateAgent->status = 2;
+        $updateAgent->update();
+
+        $addNewAgent = new AgentAssigned();
+        $addNewAgent->service_id = $serviceId;
+        $addNewAgent->assigned_by = auth()->id();
+        $addNewAgent->agent = $request->agent_id;
+        $currentDateTime = now();
+        $addNewAgent->assigned_date = $currentDateTime->toDateString();
+        $addNewAgent->assigned_time = $currentDateTime->toTimeString();
+        $addNewAgent->save(); 
+
+        return redirect()->back()->with([
+            'message'    => __('Agent assigned successfully!'),
+            'alert-type' => 'success',
+        ]);
     }
 
 }

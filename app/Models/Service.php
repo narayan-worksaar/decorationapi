@@ -60,4 +60,8 @@ class Service extends Model
     {
         return $this->hasOne(PaymentMode::class,'id', 'payment_mode_id')->select('id','payment_method_name')->where('status','active');
     }
+    public function assigned_agent() 
+    {
+        return $this->hasMany(AgentAssigned::class,'service_id', 'id')->with('agent_name');
+    }
 }
