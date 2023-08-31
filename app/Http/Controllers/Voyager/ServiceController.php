@@ -236,6 +236,7 @@ class ServiceController extends VoyagerBaseController
 
     }
     public function update_agent (Request $request){
+    
         $serviceId = $request->input('ser_id');
         $updateAgent = Service::find($serviceId);
         $updateAgent->assigned_agent_id = $request->input('agent_id');

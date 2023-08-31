@@ -393,7 +393,7 @@ class BookingController extends Controller
         ->with('tasktype')
         ->with('serviceCreator')
         ->with('paymentMode')
-        // ->with('assigned_agent')
+        ->with('task_completed_by_agent')
         ->get();
         return response()->json([
             "status" => 200,

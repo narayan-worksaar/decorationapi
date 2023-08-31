@@ -5,6 +5,7 @@
 {{-- ------------- assign agent modal ----------------- --}}
 
 <div class="modal modal-info fade in" tabindex="-1" id="assignAgentModal" role="dialog" aria-hidden="true">
+   
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -15,7 +16,7 @@
                 @csrf
                 @method('PUT')
                 <input id="m_form_method" type="hidden" name="_method" value="PUT">
-                <input type="hidden" name="_token" value="AoqJXzp5aB5Cb9Kjqi1BJy6GVxlKOcBlrKmudUtP">
+               
                 <div class="modal-body">
                     
                     <label for="target">Agent Name</label>

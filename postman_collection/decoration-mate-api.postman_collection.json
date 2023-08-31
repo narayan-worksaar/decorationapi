@@ -1,0 +1,1488 @@
+{
+	"info": {
+		"_postman_id": "0283efc9-bacf-47c1-8431-60b8a566d175",
+		"name": "decoration-mate-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "Rohit",
+							"type": "default"
+						},
+						{
+							"key": "mobile_number",
+							"value": "9832339905",
+							"type": "default"
+						},
+						{
+							"key": "password",
+							"value": "12345678",
+							"type": "default"
+						},
+						{
+							"key": "password_confirmation",
+							"value": "12345678",
+							"type": "default"
+						},
+						{
+							"key": "user_type_id",
+							"value": "3",
+							"type": "default"
+						},
+						{
+							"key": "aadhaar_card",
+							"type": "file",
+							"src": "/home/narayan/Desktop/testimage/4mb.jpg"
+						},
+						{
+							"key": "driving_license",
+							"type": "file",
+							"src": "/home/narayan/Desktop/testimage/2mb.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://192.168.16.103:8000/api/auth/register",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"16",
+						"103"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xOTIuMTY4LjE2LjEwNDo4MDAwXC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjkyNzA5NDgzLCJleHAiOjE2OTI3MTMwODMsIm5iZiI6MTY5MjcwOTQ4MywianRpIjoiZjFja1NSbFhxbGJrYWdyZSIsInN1YiI6NDYsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.3ky3tUg4tjRkDwe-faX6jaMhaT8Kk3w7Q1Q9lomv23s",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email_or_mobile\":\"paswan.narayan@gmail.com\",\n    \"password\":\"12345678\"\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xOTIuMTY4LjE2LjEwMzo4MDAwXC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjg3Nzg4NDUzLCJleHAiOjE2ODc3OTIwNTMsIm5iZiI6MTY4Nzc4ODQ1MywianRpIjoiZWpxYlREVndCeUFuTWdxMyIsInN1YiI6MSwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.lrOvxZWHT3f-4KNcbQD6XovNCaqdazk-NO5efiE8OPU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://192.168.16.103:8000/api/auth/me",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"16",
+						"103"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xOTIuMTY4LjE2LjEwMzo4MDAwXC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjg3ODc1ODgyLCJleHAiOjE2ODc4Nzk0ODIsIm5iZiI6MTY4Nzg3NTg4MiwianRpIjoiMTJGSWdJajdzQUZ2MXZ2biIsInN1YiI6MiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.PeJ2BvKlP2aWs63rmZDEdx8PUkUBoA30DnWw-77wSVo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/ecmascript",
+						"type": "default"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://192.168.16.103:8000/api/auth/logout",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"16",
+						"103"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user-types",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://192.168.16.103:8000/api/user-types",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"16",
+						"103"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"user-types"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "on-boarding",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://theinstallersapi.worksaar.com/api/on-boarding",
+					"protocol": "https",
+					"host": [
+						"theinstallersapi",
+						"worksaar",
+						"com"
+					],
+					"path": [
+						"api",
+						"on-boarding"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "forgot-password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"paswan.narayan@gmail.com\"\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/forgot-password",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"forgot-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "role-update",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user_type_id\":2\n        \n}"
+				},
+				"url": {
+					"raw": "http://192.168.16.103:8000/api/update-role?id=1",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"16",
+						"103"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"update-role"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all-service-booking-fields",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdGhlaW5zdGFsbGVyc2FwaS53b3Jrc2Fhci5jb21cL2FwaVwvYXV0aFwvbG9naW4iLCJpYXQiOjE2ODk0MTQ2MzQsImV4cCI6MTY4OTQxODIzNCwibmJmIjoxNjg5NDE0NjM0LCJqdGkiOiJxOXZaZUZ6bGdXb2tlT1dTIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.gcKyM_Fh9KlDiZpbJJ0Cxvxjco2j3eBZTxZNO2C5Dh4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "https://theinstallersapi.worksaar.com/api/auth/all-service-booking-fields",
+					"protocol": "https",
+					"host": [
+						"theinstallersapi",
+						"worksaar",
+						"com"
+					],
+					"path": [
+						"api",
+						"auth",
+						"all-service-booking-fields"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "store-service-booking",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdGhlaW5zdGFsbGVyc2FwaS53b3Jrc2Fhci5jb21cL2FwaVwvYXV0aFwvbG9naW4iLCJpYXQiOjE2OTA5Nzc2MjAsImV4cCI6MTY5MDk4MTIyMCwibmJmIjoxNjkwOTc3NjIwLCJqdGkiOiJybTNub2J1bTEzajBic2FDIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.lN9xF029-wCNEwNdxK-okQA6yfy3r6gJRRQVXOOnoRY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"client_name\": \"Susila Chettri\"\n}"
+				},
+				"url": {
+					"raw": "https://theinstallersapi.worksaar.com/api/auth/store-service-booking",
+					"protocol": "https",
+					"host": [
+						"theinstallersapi",
+						"worksaar",
+						"com"
+					],
+					"path": [
+						"api",
+						"auth",
+						"store-service-booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-service-booking-data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://theinstallersapi.worksaar.com/api/get-service-booking-data",
+					"protocol": "https",
+					"host": [
+						"theinstallersapi",
+						"worksaar",
+						"com"
+					],
+					"path": [
+						"api",
+						"get-service-booking-data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update-dealer-details",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdGhlaW5zdGFsbGVyc2FwaS53b3Jrc2Fhci5jb21cL2FwaVwvYXV0aFwvbG9naW4iLCJpYXQiOjE2OTA2MTE1NTgsImV4cCI6MTY5MDYxNTE1OCwibmJmIjoxNjkwNjExNTU4LCJqdGkiOiJBYVE0N3J2cUE1SEpaV0Y1Iiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.GpJGlLkMYzFTbibztvKTJqVUpsZRzkGGWA-YeRAF5eY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "id",
+							"value": "1",
+							"type": "default"
+						},
+						{
+							"key": "name",
+							"value": "",
+							"type": "default"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/home/narayan/Downloads/np.jpg"
+						},
+						{
+							"key": "mobile_number",
+							"value": "9832339907",
+							"type": "default"
+						},
+						{
+							"key": "alternate_mobile_number",
+							"value": "9832339909",
+							"type": "default"
+						},
+						{
+							"key": "gender_id",
+							"value": "1",
+							"type": "default"
+						},
+						{
+							"key": "date_of_birth",
+							"value": "10-03-1985",
+							"type": "default"
+						},
+						{
+							"key": "address",
+							"value": "Malbazar",
+							"type": "default"
+						},
+						{
+							"key": "landmark",
+							"value": "opposite Community Hall",
+							"type": "default"
+						},
+						{
+							"key": "city",
+							"value": "Mal",
+							"type": "default"
+						},
+						{
+							"key": "state",
+							"value": "West Bengal",
+							"type": "default"
+						},
+						{
+							"key": "pin_code",
+							"value": "735221",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://theinstallersapi.worksaar.com/api/auth/update-dealer-details",
+					"protocol": "https",
+					"host": [
+						"theinstallersapi",
+						"worksaar",
+						"com"
+					],
+					"path": [
+						"api",
+						"auth",
+						"update-dealer-details"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "task-type",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3RcL2RlY29yYXRpb25hcGlcL2FwaVwvYXV0aFwvbG9naW4iLCJpYXQiOjE2ODk4NTUyMjgsImV4cCI6MTY4OTg1ODgyOCwibmJmIjoxNjg5ODU1MjI4LCJqdGkiOiJ6WWFGVVpTSnI2dkY5WkZaIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.jpLqXz0a0a6S6dQgYEw40Flmi_0xntmb8AP-APlPR6g",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"client_name\":\"Anita Paswan\"\n    \n}"
+				},
+				"url": {
+					"raw": "https://theinstallersapi.worksaar.com/api/auth/task-type",
+					"protocol": "https",
+					"host": [
+						"theinstallersapi",
+						"worksaar",
+						"com"
+					],
+					"path": [
+						"api",
+						"auth",
+						"task-type"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "gender",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://theinstallersapi.worksaar.com/api/gender",
+					"protocol": "https",
+					"host": [
+						"theinstallersapi",
+						"worksaar",
+						"com"
+					],
+					"path": [
+						"api",
+						"gender"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all-measurement-details-fields",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdGhlaW5zdGFsbGVyc2FwaS53b3Jrc2Fhci5jb21cL2FwaVwvYXV0aFwvbG9naW4iLCJpYXQiOjE2ODk5NDk5MTgsImV4cCI6MTY4OTk1MzUxOCwibmJmIjoxNjg5OTQ5OTE4LCJqdGkiOiJwdFpwc3VXMTFRdmFvYmJJIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.VQnTiwBiIeHNO123M9s7C1pWJt1ZC56C7RfW1wAxzTI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "https://theinstallersapi.worksaar.com/api/auth/all-measurement-details-fields",
+					"protocol": "https",
+					"host": [
+						"theinstallersapi",
+						"worksaar",
+						"com"
+					],
+					"path": [
+						"api",
+						"auth",
+						"all-measurement-details-fields"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-details",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://theinstallersapi.worksaar.com/api/get-details",
+					"protocol": "https",
+					"host": [
+						"theinstallersapi",
+						"worksaar",
+						"com"
+					],
+					"path": [
+						"api",
+						"get-details"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "store-data",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"Narayan\",\n    \"email\":\"paswan@gmail.com\",\n    \"description\":\"nice description\"    \n}"
+				},
+				"url": {
+					"raw": "https://theinstallersapi.worksaar.com/api/store-data",
+					"protocol": "https",
+					"host": [
+						"theinstallersapi",
+						"worksaar",
+						"com"
+					],
+					"path": [
+						"api",
+						"store-data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update-data",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"Narayan Paswan\",\n    \"email\":\"paswan@gmail.com\",\n    \"description\":\"nice description\"    \n}"
+				},
+				"url": {
+					"raw": "https://theinstallersapi.worksaar.com/api/update-data?id=1",
+					"protocol": "https",
+					"host": [
+						"theinstallersapi",
+						"worksaar",
+						"com"
+					],
+					"path": [
+						"api",
+						"update-data"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete-data",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "https://theinstallersapi.worksaar.com/api/delete-data?id=1",
+					"protocol": "https",
+					"host": [
+						"theinstallersapi",
+						"worksaar",
+						"com"
+					],
+					"path": [
+						"api",
+						"delete-data"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all-pending-booking",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xOTIuMTY4LjkuMjI3OjgwMDBcL2FwaVwvYXV0aFwvbG9naW4iLCJpYXQiOjE2OTMwMjk2NjUsImV4cCI6MTY5MzAzMzI2NSwibmJmIjoxNjkzMDI5NjY1LCJqdGkiOiJCdGJLTWxZYTNWbDFRMkZuIiwic3ViIjo4LCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.pokvm6z2YkBQ8FFRHWATDF2dJ8ktih0B20-B2e40DcY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://192.168.9.227:8000/api/auth/all-pending-booking?page=1",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"9",
+						"227"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"all-pending-booking"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all-states",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdGhlaW5zdGFsbGVyc2FwaS53b3Jrc2Fhci5jb21cL2FwaVwvYXV0aFwvbG9naW4iLCJpYXQiOjE2OTA2MTYyNDEsImV4cCI6MTY5MDYxOTg0MSwibmJmIjoxNjkwNjE2MjQxLCJqdGkiOiJKanNSSVNQcWh1amFBM3Z4Iiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.2TqsdESPP2654ihuw6DIoeTiXqwzUjg9AsDRF3BdLEQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://theinstallersapi.worksaar.com/api/auth/all-states",
+					"protocol": "https",
+					"host": [
+						"theinstallersapi",
+						"worksaar",
+						"com"
+					],
+					"path": [
+						"api",
+						"auth",
+						"all-states"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "state-wise-cities",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvdGhlaW5zdGFsbGVyc2FwaS53b3Jrc2Fhci5jb21cL2FwaVwvYXV0aFwvbG9naW4iLCJpYXQiOjE2OTA2MTYyNDEsImV4cCI6MTY5MDYxOTg0MSwibmJmIjoxNjkwNjE2MjQxLCJqdGkiOiJKanNSSVNQcWh1amFBM3Z4Iiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.2TqsdESPP2654ihuw6DIoeTiXqwzUjg9AsDRF3BdLEQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://theinstallersapi.worksaar.com/api/auth/state-wise-cities?state_id=1",
+					"protocol": "https",
+					"host": [
+						"theinstallersapi",
+						"worksaar",
+						"com"
+					],
+					"path": [
+						"api",
+						"auth",
+						"state-wise-cities"
+					],
+					"query": [
+						{
+							"key": "state_id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "testplaceapi",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452&key=AIzaSyBgcejM6KxDF1mfBl6icxy2WlZ84WR1shs",
+					"protocol": "https",
+					"host": [
+						"maps",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"maps",
+						"api",
+						"geocode",
+						"json"
+					],
+					"query": [
+						{
+							"key": "latlng",
+							"value": "40.714224,-73.961452"
+						},
+						{
+							"key": "key",
+							"value": "AIzaSyBgcejM6KxDF1mfBl6icxy2WlZ84WR1shs"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "payment-mode",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xOTIuMTY4LjE2LjEwNDo4MDAwXC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjkwOTcwMzk1LCJleHAiOjE2OTA5NzM5OTUsIm5iZiI6MTY5MDk3MDM5NSwianRpIjoiVUYxQTNFNXNlZkdCajNUOSIsInN1YiI6MSwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.N_1PQpp4kFFZ9xoRT_4ba37QimfqAUyshrlxo9R21Cw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://192.168.16.104:8000/api/auth/payment-mode",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"16",
+						"104"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"payment-mode"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-service-details",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9hdXRoXC9sb2dpbiIsImlhdCI6MTY5Mjk3ODc0NywiZXhwIjoxNjkyOTgyMzQ3LCJuYmYiOjE2OTI5Nzg3NDcsImp0aSI6IlpBbmN2SWpzdU42WEZodmoiLCJzdWIiOjgsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.LrV5F7K2W-20BNPWIG-6G6AeLNMdLuhsEboJASqWaek",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/auth/get-service-details?service_id=465",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"get-service-details"
+					],
+					"query": [
+						{
+							"key": "service_id",
+							"value": "465"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update-booked-service",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xOTIuMTY4LjE2LjEwNDo4MDAwXC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjkyMTkzOTI1LCJleHAiOjE2OTIxOTc1MjUsIm5iZiI6MTY5MjE5MzkyNSwianRpIjoiUzBTZHkyT2pWRGZnamYwRSIsInN1YiI6OCwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.SwbTAtaH_llhqbL1JvfBqzROq1ki50l5OmeFCn0qW9M",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"task_type_id\":2\n    \n}"
+				},
+				"url": {
+					"raw": "http://192.168.16.104:8000/api/auth/update-booked-service?id=466",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"16",
+						"104"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"update-booked-service"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "466"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all-assigned-service",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xOTIuMTY4LjE2LjEwMzo4MDAwXC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjkyMjg5MjU4LCJleHAiOjE2OTIyOTI4NTgsIm5iZiI6MTY5MjI4OTI1OCwianRpIjoiajNrUnJTZTJsWjhaUHZtbyIsInN1YiI6NDUsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.YeDCAsEvvNgKFel4znnt-AnjfKjh-llOuJSTmlXdMI4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://192.168.16.103:8000/api/auth/all-assigned-service?page=1",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"16",
+						"103"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"all-assigned-service"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "status",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xOTIuMTY4LjE2LjEwNDo4MDAwXC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjkyNzAyMzIzLCJleHAiOjE2OTI3MDU5MjMsIm5iZiI6MTY5MjcwMjMyMywianRpIjoiTGkwZTZCZm1WcnVUaWlmaCIsInN1YiI6NDYsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.qjUkM1nRj5CcSkDmHnktixpdqI54Jt2h7QLJTqC1no4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://192.168.16.104:8000/api/auth/all-status",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"16",
+						"104"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"all-status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update-service-by-agent",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9hdXRoXC9sb2dpbiIsImlhdCI6MTY5MzQ3OTkyNiwiZXhwIjoxNjkzNDgzNTI2LCJuYmYiOjE2OTM0Nzk5MjYsImp0aSI6InlMVlNiSUVNSWhwNGVSRTYiLCJzdWIiOjgsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.QeCO0brj_slsY6VLDIDcDmAglNA8Vetvmxut4vL1Z7Y",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"warning": "This is a duplicate header and will be overridden by the Content-Type header generated by Postman.",
+						"key": "Content-Type",
+						"value": "multipart/form-data",
+						"type": "default"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "service_id",
+							"value": "457",
+							"type": "default"
+						},
+						{
+							"key": "remarks",
+							"value": "Jai sri ram",
+							"type": "default"
+						},
+						{
+							"key": "status",
+							"value": "2",
+							"type": "default"
+						},
+						{
+							"key": "agent_form_image[0][form_image_file]",
+							"type": "file",
+							"src": "/home/narayan/Desktop/testimage/4mb.jpg"
+						},
+						{
+							"key": "agent_form_image[1][form_image_file]",
+							"type": "file",
+							"src": "/home/narayan/Desktop/testimage/2mb.jpg"
+						},
+						{
+							"key": "agent_site_image[0][site_image_file]",
+							"type": "file",
+							"src": "/home/narayan/Desktop/testimage/BankPassbook.jpg"
+						},
+						{
+							"key": "agent_site_image[1][site_image_file]",
+							"type": "file",
+							"src": "/home/narayan/Desktop/testimage/2-Aadhar Card.jpg"
+						},
+						{
+							"key": "payment_collected",
+							"value": "1",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/auth/update-service-by-agent",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"update-service-by-agent"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all-on-going-booking",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xOTIuMTY4LjE2LjEwNDo4MDAwXC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjkyOTcyMDM5LCJleHAiOjE2OTI5NzU2MzksIm5iZiI6MTY5Mjk3MjAzOSwianRpIjoieWZwY3BuUGFqT3BleXhJeiIsInN1YiI6OCwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.Bhvl6q4q7kMrdSS3gYKe6FOMrkCklQ0QYZXD1Sgu_5Q",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://192.168.16.104:8000/api/auth/all-on-going-booking?page=1",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"16",
+						"104"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"all-on-going-booking"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-on-going-service-details",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xOTIuMTY4LjkuMjI3OjgwMDBcL2FwaVwvYXV0aFwvbG9naW4iLCJpYXQiOjE2OTMwMjk2NjUsImV4cCI6MTY5MzAzMzI2NSwibmJmIjoxNjkzMDI5NjY1LCJqdGkiOiJCdGJLTWxZYTNWbDFRMkZuIiwic3ViIjo4LCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.pokvm6z2YkBQ8FFRHWATDF2dJ8ktih0B20-B2e40DcY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://192.168.9.227:8000/api/auth/get-on-going-service-details?service_id=459",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"9",
+						"227"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"get-on-going-service-details"
+					],
+					"query": [
+						{
+							"key": "service_id",
+							"value": "459"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all-completed-booking",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xOTIuMTY4LjkuMjI3OjgwMDBcL2FwaVwvYXV0aFwvbG9naW4iLCJpYXQiOjE2OTMwMjk2NjUsImV4cCI6MTY5MzAzMzI2NSwibmJmIjoxNjkzMDI5NjY1LCJqdGkiOiJCdGJLTWxZYTNWbDFRMkZuIiwic3ViIjo4LCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.pokvm6z2YkBQ8FFRHWATDF2dJ8ktih0B20-B2e40DcY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://192.168.9.227:8000/api/auth/all-completed-booking?page=1",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"9",
+						"227"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"all-completed-booking"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-booking-completed-details",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xOTIuMTY4LjE2LjEwMzo4MDAwXC9hcGlcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjkzMDM2MTYwLCJleHAiOjE2OTMwMzk3NjAsIm5iZiI6MTY5MzAzNjE2MCwianRpIjoiYkZNNVhxVENRRWlpYUFUUSIsInN1YiI6OCwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.o2Y6bVbToJ4oxn8H5woUdEk0EW-idlyw8Pswq0WGzCk",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://192.168.16.103:8000/api/auth/get-booking-completed-details?service_id=459",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"16",
+						"103"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"get-booking-completed-details"
+					],
+					"query": [
+						{
+							"key": "service_id",
+							"value": "459"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -68,4 +68,11 @@ class Service extends Model
         ->with('agent_name');
         
     }
+    public function task_completed_by_agent() 
+    {
+        return $this->hasOne(ServiceUpdatedByAgent::class,'service_id', 'id')
+        ->latest('created_at')
+        ->with('userData');
+        
+    }
 }

@@ -30,7 +30,7 @@ class ServiceUpdatedByAgent extends Model
     }
     public function userData() 
     {
-        return $this->hasOne(User::class,'id', 'created_by')->select('id','name');
+        return $this->hasOne(User::class,'id', 'created_by')->select('id','name','avatar');
     }
 
 }
