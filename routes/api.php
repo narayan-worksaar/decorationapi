@@ -61,6 +61,8 @@ Route::group([
     
     Route::get("all-completed-booking", [BookingController::class, "all_completed_booking"]);
     Route::get("get-booking-completed-details", [BookingController::class, "get_booking_completed_details"]);
+
+    Route::get("all-yes-no", [AgentController::class, "all_yes_no"]);
     
 });
 

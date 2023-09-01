@@ -15,6 +15,8 @@ class ServiceUpdatedByAgent extends Model
         'remarks',
         'status',
         'created_by',
+        'service_charge',
+        'payment_collected',
         'created_date',
         'created_time',
     ];

@@ -307,7 +307,7 @@ class BookingController extends Controller
       
         $all_assigned_service = Service::orderBy('id', 'DESC')
         ->where('assigned_agent_id', auth()->id())
-            ->where('status', 1)
+            ->where('status', 2)
             ->with('tasktype')
             ->with('serviceCreator')
             ->paginate(10);
