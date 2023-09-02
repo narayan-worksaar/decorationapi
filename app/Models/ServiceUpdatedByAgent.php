@@ -34,5 +34,19 @@ class ServiceUpdatedByAgent extends Model
     {
         return $this->hasOne(User::class,'id', 'created_by')->select('id','name','avatar');
     }
+    public function yesNoData() 
+    {
+        return $this->hasOne(YesNo::class,'id', 'payment_collected')->select('id','yes_no_list');
+    }
+    public function formImageData() 
+    {
+        return $this->hasMany(FormImage::class, 'service_updated_by_agent_id', 'id');
+        
+    }
+    public function siteImageData() 
+    {
+        return $this->hasMany(SiteImage::class, 'service_updated_by_agent_id', 'id');
+        
+    }
 
 }

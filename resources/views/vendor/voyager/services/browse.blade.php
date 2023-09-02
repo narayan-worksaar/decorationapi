@@ -2,41 +2,7 @@
 
 @section('page_title', __('voyager::generic.viewing').' '.$dataType->getTranslatedAttribute('display_name_plural'))
 
-{{-- ------------- assign agent modal ----------------- --}}
 
-<div class="modal modal-info fade in" tabindex="-1" id="assignAgentModal" role="dialog" aria-hidden="true">
-   
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 id="m_hd_edit" class="modal-title" style=""><i class="voyager-edit"></i> Assign Agent</h4>
-            </div>
-            <form action="{{ url('/admin/update-agent') }}" method="POST" >
-                @csrf
-                @method('PUT')
-                <input id="m_form_method" type="hidden" name="_method" value="PUT">
-               
-                <div class="modal-body">
-                    
-                    <label for="target">Agent Name</label>
-                    <select id="agent_id" class="form-control" name="agent_id">
-                        @foreach($agentData as $agentData)
-                        <option value="{{ $agentData->id }}">{{ $agentData->name }}</option>
-                        @endforeach
-                    </select>
-                    <input type="hidden" name="ser_id" id="ser_id" value="">
-                </div>
-                <div class="modal-footer">
-                    <input type="submit" class="btn btn-success pull-right delete-confirm__" value="Update">
-                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancel</button>
-                </div>
-            </form>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div>
-
-{{-- ----------------assign agent modal end --------------------- --}}
 
 @section('page_header')
     <div class="container-fluid">
@@ -360,6 +326,42 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+
+    {{-- ------------- assign agent modal ----------------- --}}
+
+<div class="modal modal-info fade in" tabindex="-1" id="assignAgentModal" role="dialog" aria-hidden="true">
+   
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 id="m_hd_edit" class="modal-title" style=""><i class="voyager-edit"></i> Assign Agent</h4>
+            </div>
+            <form action="{{ url('/admin/update-agent') }}" method="POST" >
+                @csrf
+                @method('PUT')
+                <input id="m_form_method" type="hidden" name="_method" value="PUT">
+               
+                <div class="modal-body">
+                    
+                    <label for="target">Agent Name</label>
+                    <select id="agent_id" class="form-control" name="agent_id">
+                        @foreach($agentData as $agentData)
+                        <option value="{{ $agentData->id }}">{{ $agentData->name }}</option>
+                        @endforeach
+                    </select>
+                    <input type="hidden" name="ser_id" id="ser_id" value="">
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-success pull-right delete-confirm__" value="Update">
+                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+{{-- ----------------assign agent modal end --------------------- --}}
 @stop
 
 @section('css')
