@@ -75,4 +75,10 @@ class Service extends Model
         ->with('userData');
         
     }
+
+    public function task_upadated_by_agent() 
+    {
+        return $this->hasMany(ServiceUpdatedByAgent::class,'service_id', 'id')->with('formImageData')->with('siteImageData');
+    }
+
 }
