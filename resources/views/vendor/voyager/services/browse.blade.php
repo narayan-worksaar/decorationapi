@@ -258,9 +258,9 @@
                                         @endforeach
                                         <td>
                                         
-                                            <a href="{{ url('/admin/view-agent-task/'.$data->id) }}" title="View agent task" class="btn btn-sm btn-warning pull-right view">
+                                            {{-- <a href="{{ url('/admin/view-agent-task/'.$data->id) }}" title="View agent task" class="btn btn-sm btn-warning pull-right view">
                                                 <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">View</span>
-                                            </a>
+                                            </a> --}}
                                              
                                             <button type="button" value="{{ $data->id }}" class="btn btn-sm btn-primary pull-right view assignAgent">
                                                 <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm ">Assign</span>
