@@ -1,7 +1,7 @@
 @extends('voyager::master')
 
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
-<link href="{{ url('preview_assets/lightbox.css') }}" rel="stylesheet">
+<link href="{{ url('public/preview_assets/lightbox.css') }}" rel="stylesheet">
 
 
 @section('page_header')
@@ -213,13 +213,13 @@
                     @if ($agentService->formImageData && $agentService->formImageData->count() > 0)
                         @foreach ($agentService->formImageData as $image)
                         
-                          <a href="{{ asset('storage/images/'.$image->form_image_file) }}" data-lightbox="models" data-title="{{ $image->form_image_file }}">  
-                            <img src="{{ asset('storage/images/'.$image->form_image_file) }}" width="200px;" height="200px">
+                          <a href="{{ asset('public/storage/images/'.$image->form_image_file) }}" data-lightbox="models" data-title="{{ $image->form_image_file }}">  
+                            <img src="{{ asset('public/storage/images/'.$image->form_image_file) }}" width="200px;" height="200px">
                           </a>
                           
                           
                           <!-- Add a download button -->
-                          <a href="{{ asset('storage/images/'.$image->form_image_file) }}" download="{{ $image->form_image_file }}">
+                          <a href="{{ asset('public/storage/images/'.$image->form_image_file) }}" download="{{ $image->form_image_file }}">
                               
                               <p>Download</p>
                           </a>
@@ -240,15 +240,14 @@
                    
                     @if ($agentService->siteImageData && $agentService->siteImageData->count() > 0)
                         @foreach ($agentService->siteImageData as $image)
-                            {{-- <p>{{ $image->site_image_file }}</p> --}}
-
-                            <a href="{{ asset('storage/images/'.$image->site_image_file) }}" data-lightbox="models" data-title="{{ $image->site_image_file }}">  
-                                <img src="{{ asset('storage/images/'.$image->site_image_file) }}" width="200px;" height="200px">
+                          
+                            <a href="{{ asset('public/storage/images/'.$image->site_image_file) }}" data-lightbox="models" data-title="{{ $image->site_image_file }}">  
+                                <img src="{{ asset('public/storage/images/'.$image->site_image_file) }}" width="200px;" height="200px">
                               </a>
                               
                               
                               <!-- Add a download button -->
-                              <a href="{{ asset('storage/images/'.$image->site_image_file) }}" download="{{ $image->site_image_file }}">
+                              <a href="{{ asset('public/storage/images/'.$image->site_image_file) }}" download="{{ $image->site_image_file }}">
                                   
                                   <p>Download</p>
                               </a>
@@ -319,6 +318,6 @@
 
     </script>
 
-<script src="{{ url('preview_assets/lightbox-plus-jquery.js') }}"></script>
+<script src="{{ url('public/preview_assets/lightbox-plus-jquery.js') }}"></script>
 
 @stop

@@ -1,7 +1,7 @@
 @extends('voyager::master')
 
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
-<link href="{{ url('preview_assets/lightbox.css') }}" rel="stylesheet">
+<link href="{{ url('public/preview_assets/lightbox.css') }}" rel="stylesheet">
 
 
 @section('page_header')
@@ -145,12 +145,12 @@
                      <div class="panel-body" style="padding-top:0;">
                         @if (isset($dataTypeContent->aadhaar_card))
                     
-                     <a href="{{ asset('storage/images/'.$dataTypeContent->aadhaar_card) }}" data-lightbox="models" data-title="{{ $dataTypeContent->aadhaar_card }}">  
-                        <img src="{{ asset('storage/images/'.$dataTypeContent->aadhaar_card) }}" width="200px;" height="200px">
+                     <a href="{{ asset('public/storage/images/'.$dataTypeContent->aadhaar_card) }}" data-lightbox="models" data-title="{{ $dataTypeContent->aadhaar_card }}">  
+                        <img src="{{ asset('public/storage/images/'.$dataTypeContent->aadhaar_card) }}" width="200px;" height="200px">
                       </a>
                       
                       <!-- Add a download button -->
-                      <a href="{{ asset('storage/images/'.$dataTypeContent->aadhaar_card) }}" download="{{ $dataTypeContent->aadhaar_card }}">
+                      <a href="{{ asset('public/storage/images/'.$dataTypeContent->aadhaar_card) }}" download="{{ $dataTypeContent->aadhaar_card }}">
                           <p>Download</p>
                       </a>
                       @else
@@ -166,12 +166,12 @@
                      <div class="panel-body" style="padding-top:0;">
                         @if (isset($dataTypeContent->driving_license))
                     
-                     <a href="{{ asset('storage/images/'.$dataTypeContent->driving_license) }}" data-lightbox="models" data-title="{{ $dataTypeContent->driving_license }}">  
-                        <img src="{{ asset('storage/images/'.$dataTypeContent->driving_license) }}" width="200px;" height="200px">
+                     <a href="{{ asset('public/storage/images/'.$dataTypeContent->driving_license) }}" data-lightbox="models" data-title="{{ $dataTypeContent->driving_license }}">  
+                        <img src="{{ asset('public/storage/images/'.$dataTypeContent->driving_license) }}" width="200px;" height="200px">
                       </a>
                       
                       <!-- Add a download button -->
-                      <a href="{{ asset('storage/images/'.$dataTypeContent->driving_license) }}" download="{{ $dataTypeContent->driving_license }}">
+                      <a href="{{ asset('public/storage/images/'.$dataTypeContent->driving_license) }}" download="{{ $dataTypeContent->driving_license }}">
                           <p>Download</p>
                       </a>
                       @else
@@ -235,6 +235,6 @@
 
     </script>
 
-<script src="{{ url('preview_assets/lightbox-plus-jquery.js') }}"></script>
+<script src="{{ url('public/preview_assets/lightbox-plus-jquery.js') }}"></script>
 
 @stop
