@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Hash;
 
 
 class AuthController extends Controller
@@ -137,29 +138,33 @@ class AuthController extends Controller
         return response()->json(['error' => 'Unauthorized'], 401);
     }
     */
-
+    
     public function login(Request $request)
     {
         $credentials = $request->only('email_or_mobile', 'password');
-
-         // Modify the query to search for users by email or mobile_number
-            $user = User::where(function ($query) use ($credentials) {
-                $query->where('email', $credentials['email_or_mobile'])
-                    ->orWhere('mobile_number', $credentials['email_or_mobile']);
-            })->first();
-
-        if ($user && $token = $this->guard()->attempt(['email' => $user->email, 'password' => $credentials['password']])) {     
-            
-            if ($user->status === 'active') {
-                return $this->respondWithToken($token);
-            } else {
-                return response()->json(['error' => 'Your account is not active.'], 401);
+    
+        // Find the user by email or mobile number
+        $user = User::where(function ($query) use ($credentials) {
+            $query->where('email', $credentials['email_or_mobile'])
+                ->orWhere('mobile_number', $credentials['email_or_mobile']);
+        })->first();
+    
+        if ($user) {
+            // Verify the password manually
+            if (Hash::check($credentials['password'], $user->password)) {
+                if ($user->status === 'active') {
+                    $token = $this->guard()->login($user);
+                    return $this->respondWithToken($token);
+                } else {
+                    return response()->json(['error' => 'Your account is not active.'], 401);
+                }
             }
-            
         }
-
+    
         return response()->json(['error' => 'Unauthorized'], 401);
     }
+    
+
 
     public function me()
     {
