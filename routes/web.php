@@ -34,6 +34,12 @@ Route::get('/migratetable', function () {
     return "successfull migrate";
 });
 
+Route::get('/cacheClear', function () {
+    Artisan::call('config:cache');
+    return "successful cache clear";
+});
+
+
 Route::get('/rollbackstepone', function () {
     Artisan::call('migrate:rollback', ['--step' => 1]);
     return "successfully rolled back one step";
