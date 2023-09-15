@@ -12,5 +12,6 @@ class FormImage extends Model
     protected $fillable = [
         'service_updated_by_agent_id',
         'form_image_file',
+        'caption'
     ];
 }

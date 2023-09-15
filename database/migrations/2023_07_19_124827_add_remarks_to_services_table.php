@@ -29,6 +29,7 @@ class AddRemarksToServicesTable extends Migration
     public function down()
     {
         Schema::table('services', function (Blueprint $table) {
+            $table->dropForeign(['payment_mode_id']);
             $table->dropColumn('remarks');
             $table->dropColumn('notes');
             $table->dropColumn('payment_mode_id');

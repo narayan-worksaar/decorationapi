@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 
 class AuthController extends Controller
@@ -21,7 +22,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register','nearest_service_center']]);
         ini_set('memory_limit', '512M');
          ini_set('max_execution_time', '300');
         ini_set('upload_max_filesize', '10M');
@@ -53,6 +54,8 @@ class AuthController extends Controller
             $user->aadhaar_card = $request->aadhaar_card;
             $user->password = bcrypt($request->password);
             $user->role_id = $request->user_type_id;
+            $user->coordinate = $request->coordinate;
+            
             if($request->user_type_id == 5){
                 $user->status = 'active';
                 $user->employee_of_dealer_id = $request->employee_of_dealer_id;
@@ -200,6 +203,30 @@ class AuthController extends Controller
     public function guard()
     {
         return Auth::guard('api');
+    }
+
+    public function nearest_service_center(Request $request){
+        
+        $lat = $request->latitude;
+        $long = $request->longitude;
+
+       $data= DB::table('coordinates')
+        ->select('coordinates.id',
+        'coordinates.place',
+        DB::raw("6371 * acos(cos(radians(" . $lat . "))
+        * cos(radians(coordinates.latitude))
+        * cos(radians(coordinates.longitude) - radians(" . $long . ")) 
+        + sin(radians(" . $lat . "))
+        * sin(radians(coordinates.latitude))) AS distance"))
+        ->orderBy('distance','asc')
+        ->first();
+        // ->get();
+        
+
+        return response()->json([
+            "status" => 200,
+            "items" => $data
+        ], 200);
     }
 
     

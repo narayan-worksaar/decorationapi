@@ -27,6 +27,7 @@ class AddCreatedByUserIdToServicesTable extends Migration
     public function down()
     {
         Schema::table('services', function (Blueprint $table) {
+            $table->dropForeign(['created_by_user_id']); 
             $table->dropColumn('created_by_user_id');
         });
     }

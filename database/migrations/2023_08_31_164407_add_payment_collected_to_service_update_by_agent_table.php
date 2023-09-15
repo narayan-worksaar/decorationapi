@@ -27,6 +27,7 @@ class AddPaymentCollectedToServiceUpdateByAgentTable extends Migration
     public function down()
     {
         Schema::table('service_update_by_agent', function (Blueprint $table) {
+            $table->dropForeign(['payment_collected']); 
             $table->dropColumn('payment_collected');
         });
     }

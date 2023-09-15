@@ -35,7 +35,8 @@ class Service extends Model
         'address',    
         'type_of_measurement',    
         'type_of_material',    
-        'employee_of',    
+        'employee_of',
+        'coordinate'    
     ];
 
     public function measurements_details() 

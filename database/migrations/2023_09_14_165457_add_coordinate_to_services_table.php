@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddStatusToServicesTable extends Migration
+class AddCoordinateToServicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,8 @@ class AddStatusToServicesTable extends Migration
     public function up()
     {
         Schema::table('services', function (Blueprint $table) {
-            $table->bigInteger('status')->unsigned()->default(1);
-            $table->foreign('status')->references('id')->on('status')->onUpdate('cascade');
+            $table->foreign('coordinate')->references('id')->on('coordinates')->onUpdate('cascade');
+            $table->bigInteger('coordinate')->unsigned()->nullable();
         });
     }
 
@@ -27,8 +27,8 @@ class AddStatusToServicesTable extends Migration
     public function down()
     {
         Schema::table('services', function (Blueprint $table) {
-            $table->dropForeign(['status']); 
-            $table->dropColumn('status');
+            $table->dropForeign(['coordinate']); 
+            $table->dropColumn('coordinate');
         });
     }
 }

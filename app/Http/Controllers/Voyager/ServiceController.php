@@ -31,7 +31,9 @@ class ServiceController extends VoyagerBaseController
 
     public function index(Request $request)
     {
-        // dd('service index');
+         //get user id
+         $loggedInUserId =  auth()->id();
+         $loggedInUserCoordinate = User::where('id',$loggedInUserId)->select('coordinate')->first();
         
         // GET THE SLUG, ex. 'posts', 'pages', etc.
         $slug = $this->getSlug($request);
@@ -63,6 +65,10 @@ class ServiceController extends VoyagerBaseController
             $model = app($dataType->model_name);
 
             $query = $model::select($dataType->name.'.*');
+            
+            if(isset($loggedInUserCoordinate['coordinate'])){
+                $query->where('coordinate', $loggedInUserCoordinate['coordinate']);
+                }
 
             if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
                 $query->{$dataType->scope}();
@@ -181,7 +187,12 @@ class ServiceController extends VoyagerBaseController
         if (view()->exists("voyager::$slug.browse")) {
             $view = "voyager::$slug.browse";
         }
-        $agentData= User::where('role_id',3)->get();
+        
+        if(isset($loggedInUserCoordinate['coordinate'])){
+         $agentData= User::where('role_id',3)->where('coordinate', $loggedInUserCoordinate['coordinate'])->get();
+          }else{
+         $agentData= User::where('role_id',3)->get();
+        }
 
         return Voyager::view($view, compact(
             'actions',

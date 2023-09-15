@@ -41,7 +41,10 @@ class UserController extends VoyagerBaseController
 
     public function index(Request $request)
     {
-        
+        //get user id
+        $loggedInUserId =  auth()->id();
+        $loggedInUserCoordinate = User::where('id',$loggedInUserId)->select('coordinate')->first();
+        // dd($loggedInUserCoordinate['coordinate']);
         // GET THE SLUG, ex. 'posts', 'pages', etc.
         $slug = $this->getSlug($request);
 
@@ -72,6 +75,18 @@ class UserController extends VoyagerBaseController
             $model = app($dataType->model_name);
 
             $query = $model::select($dataType->name.'.*');
+            // Add a condition to filter records where the 'coordinate' column equals 5
+            
+          
+
+            if (isset($loggedInUserCoordinate['coordinate'])) {
+                $query->where('coordinate', $loggedInUserCoordinate['coordinate'])
+                      ->orWhere(function ($query) {
+                          $query->where('role_id', 4)
+                                ->orWhere('role_id', 5);
+                      });
+            }
+            
 
             if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
                 $query->{$dataType->scope}();

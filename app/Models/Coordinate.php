@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SiteImage extends Model
+class Coordinate extends Model
 {
     use HasFactory;
-    protected $table ="site_image";
+    protected $table ="coordinates";
     protected $fillable = [
-        'service_updated_by_agent_id',
-        'site_image_file',
-        'caption'
+        'place',
+        'latitude',
+        'longitude',
+        'status'
     ];
 }

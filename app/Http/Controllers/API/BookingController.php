@@ -292,7 +292,8 @@ class BookingController extends Controller
         $serviceUpdate->type_of_material = $request->type_of_material;    
         $serviceUpdate->payment_mode_id = $request->payment_mode_id;
         $serviceUpdate->remarks = $request->remarks;
-        $serviceUpdate->notes = $request->notes;    
+        $serviceUpdate->notes = $request->notes; 
+        $serviceUpdate->coordinate = $request->coordinate;    
         $serviceUpdate->save();
         
         return response()->json([

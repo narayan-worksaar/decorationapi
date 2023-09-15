@@ -36,6 +36,7 @@ Route::group([
     Route::get("me", [AuthController::class, "me"]);
     Route::post("logout", [AuthController::class, "logout"]);
     Route::post("refresh", [AuthController::class, "refresh"]);
+    Route::get("nearest-service-center", [AuthController::class, "nearest_service_center"]);
     //booking
     Route::get("all-service-booking-fields", [BookingController::class, "all_service_booking_fields"]);
     Route::post("store-service-booking", [BookingController::class, "store_service_booking"]);

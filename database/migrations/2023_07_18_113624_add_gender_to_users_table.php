@@ -34,6 +34,7 @@ class AddGenderToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['gender_id']);
             $table->dropColumn('gender_id');
             $table->dropColumn('date_of_birth');
             $table->dropColumn('address');
