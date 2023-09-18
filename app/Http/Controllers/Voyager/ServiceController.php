@@ -12,8 +12,10 @@ use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Env;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use TCG\Voyager\Database\Schema\SchemaManager;
 use TCG\Voyager\Events\BreadDataAdded;
 use TCG\Voyager\Events\BreadDataDeleted;
@@ -246,10 +248,29 @@ class ServiceController extends VoyagerBaseController
         ],200);
 
     }
+    /*
     public function update_agent (Request $request){
     
         $serviceId = $request->input('ser_id');
         $updateAgent = Service::find($serviceId);
+        
+        $userDeviceToken = User::find($updateAgent['created_by_user_id']);
+        dd($userDeviceToken['device_token']);
+        
+
+        return redirect()->back()->with([
+            'message'    => __('Agent assigned successfully!'),
+            'alert-type' => 'success',
+        ]);
+    }
+    */
+    
+    public function update_agent (Request $request){
+    
+        $serviceId = $request->input('ser_id');
+        $updateAgent = Service::find($serviceId);
+        $userDeviceToken = User::find($updateAgent['created_by_user_id']);
+        // dd($userDeviceToken['device_token']);
         $updateAgent->assigned_agent_id = $request->input('agent_id');
         $updateAgent->status = 2;
         $updateAgent->update();
@@ -262,12 +283,45 @@ class ServiceController extends VoyagerBaseController
         $addNewAgent->assigned_date = $currentDateTime->toDateString();
         $addNewAgent->assigned_time = $currentDateTime->toTimeString();
         $addNewAgent->save(); 
+        
+        //try start
+
+         // Define the headers
+         $headers = [
+            'Content-Type' => 'application/json',
+             'Authorization' => 'key=' . env('FIREBASE_KEY'),
+        ];
+    
+        // Define the JSON body
+        $body = [
+            'registration_ids' => [
+                $userDeviceToken['device_token'],
+            ],
+            'notification' => [
+                'body' => 'On-going booking',
+                'title' => 'Installer Assigned',
+                'android_channel_id' => 'theinstallers',
+                'sound' => true,
+            ],
+            'data' => [
+                '_id' => $updateAgent['id'],
+                '_serviceCode' => $updateAgent['service_code'],
+            ],
+        ];
+    
+        // Send the POST request
+        $response = Http::withHeaders($headers)->post('https://fcm.googleapis.com/fcm/send', $body);
+    
+     
+        //try end    
+        
 
         return redirect()->back()->with([
             'message'    => __('Agent assigned successfully!'),
             'alert-type' => 'success',
         ]);
     }
+    
 
     public function show(Request $request, $id)
     {
@@ -332,5 +386,7 @@ class ServiceController extends VoyagerBaseController
 
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'isSoftDeleted','agentServiceUpdatedData'));
     }
+
+   
 
 }

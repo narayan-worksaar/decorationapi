@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DealerController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\Voyager\ServiceController;
 use App\Http\Controllers\Voyager\UserController;
@@ -57,6 +58,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get("view-agent-task-details/{id}", [ServiceController::class, "view_agent_task_details"]);
     Route::get("show-agent-list/{id}", [ServiceController::class, "show_agent_list"]);
     Route::put("update-agent", [ServiceController::class, "update_agent"]);
+    Route::get("fcm-message", [ServiceController::class, "fcm_message"]);
+
+    Route::get("/dealer", [DealerController::class, "index"])->name("dealer.index");
     
 });
 

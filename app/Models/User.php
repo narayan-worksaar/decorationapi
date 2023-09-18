@@ -57,7 +57,8 @@ class User extends \TCG\Voyager\Models\User implements JWTSubject
         'state',
         'pin_code',
         'company_name',
-        'coordinate'
+        'coordinate',
+        'device_token'
     ];
 
     /**

@@ -38,7 +38,7 @@ class AuthController extends Controller
         // try{
             $validator = Validator::make($request->all(),[
                 "email" => "email|unique:users",
-                "mobile_number" => ["required", "numeric", new UniqueMobileNumber],
+                // "mobile_number" => ["required", "numeric", new UniqueMobileNumber],
                 "password" => "required|confirmed|min: 8",
             ]);
     
@@ -55,6 +55,7 @@ class AuthController extends Controller
             $user->password = bcrypt($request->password);
             $user->role_id = $request->user_type_id;
             $user->coordinate = $request->coordinate;
+            $user->device_token = $request->device_token;
             
             if($request->user_type_id == 5){
                 $user->status = 'active';
