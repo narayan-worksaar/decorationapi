@@ -38,9 +38,13 @@ class AuthController extends Controller
         // try{
             $validator = Validator::make($request->all(),[
                 "email" => "email|unique:users",
-                // "mobile_number" => ["required", "numeric", new UniqueMobileNumber],
                 "password" => "required|confirmed|min: 8",
+                "user_type_id" => "required|numeric",
             ]);
+            
+            $validator->sometimes('mobile_number', ['required', 'numeric', new UniqueMobileNumber], function ($input) {
+                return $input->user_type_id == 3 || $input->user_type_id == 5;
+            });
     
             if($validator->fails()){
                 return response()->json($validator->errors(), 400);
@@ -157,6 +161,9 @@ class AuthController extends Controller
             // Verify the password manually
             if (Hash::check($credentials['password'], $user->password)) {
                 if ($user->status === 'active') {
+                    // Update the device_token
+                    $user->device_token = $request->device_token;
+                    $user->save();
                     $token = $this->guard()->login($user);
                     return $this->respondWithToken($token);
                 } else {

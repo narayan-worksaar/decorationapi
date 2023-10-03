@@ -44,6 +44,7 @@ return [
             'driver' => 'jwt',
             'provider' => 'users',
             'hash' => false,
+            'ttl' => 525600, // 1 year in minutes
         ],
       
     ],

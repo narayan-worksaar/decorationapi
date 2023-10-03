@@ -270,7 +270,8 @@ class ServiceController extends VoyagerBaseController
         $serviceId = $request->input('ser_id');
         $updateAgent = Service::find($serviceId);
         $userDeviceToken = User::find($updateAgent['created_by_user_id']);
-        // dd($userDeviceToken['device_token']);
+        $agentDeviceToken = User::find($updateAgent['assigned_agent_id']);
+        // dd($agentDeviceToken['device_token']);
         $updateAgent->assigned_agent_id = $request->input('agent_id');
         $updateAgent->status = 2;
         $updateAgent->update();
@@ -284,7 +285,9 @@ class ServiceController extends VoyagerBaseController
         $addNewAgent->assigned_time = $currentDateTime->toTimeString();
         $addNewAgent->save(); 
         
-        //try start
+        //fcm start
+        
+        //Send notification to dealer when agent assigned start
 
          // Define the headers
          $headers = [
@@ -312,8 +315,28 @@ class ServiceController extends VoyagerBaseController
         // Send the POST request
         $response = Http::withHeaders($headers)->post('https://fcm.googleapis.com/fcm/send', $body);
     
-     
-        //try end    
+        //Send notification to dealer when agent assigned end
+
+          // Define the JSON body
+          $bodyAssignedAgent = [
+            'registration_ids' => [
+                $agentDeviceToken['device_token'],
+            ],
+            'notification' => [
+                'body' => 'Task assigned of ' . $updateAgent['client_name'],
+                'title' => 'New task assigned',
+                'android_channel_id' => 'theinstallers',
+                'sound' => true,
+            ],
+          
+        ];
+    
+        // Send the POST request
+        $responseAgent = Http::withHeaders($headers)->post('https://fcm.googleapis.com/fcm/send', $bodyAssignedAgent);
+
+        //Send notification to agent when task assigned
+            
+        //fcm end
         
 
         return redirect()->back()->with([

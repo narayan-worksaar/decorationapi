@@ -9,6 +9,7 @@ use App\Models\PaymentMode;
 use App\Models\Service;
 use App\Models\TaskType;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -318,7 +319,7 @@ class BookingController extends Controller
             "items" => $all_assigned_service
         ], 200);
     }
-
+    
     public function all_on_going_booking(){
       
         $all_on_going_booking = Service::orderBy('id', 'DESC')
@@ -337,6 +338,13 @@ class BookingController extends Controller
             "items" => $all_on_going_booking
         ], 200);
     }
+    
+
+    
+    
+    
+    
+        
 
     public function get_on_going_service_details(Request $request){
         
