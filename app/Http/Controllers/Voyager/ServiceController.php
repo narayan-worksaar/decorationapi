@@ -8,6 +8,7 @@ namespace App\Http\Controllers\Voyager;
 use App\Models\AgentAssigned;
 use App\Models\Service;
 use App\Models\ServiceUpdatedByAgent;
+use App\Models\TaskAcceptDeclinedNotification;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -408,6 +409,18 @@ class ServiceController extends VoyagerBaseController
         // dd($agentServiceUpdatedData);
 
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'isSoftDeleted','agentServiceUpdatedData'));
+    }
+
+    public function read_notification (Request $request){
+      
+        $updateNotification = TaskAcceptDeclinedNotification::find($request->id);
+        $updateNotification->is_read = 1;
+        $updateNotification->update();
+    
+        return redirect()->back()->with([
+            'message'    => __('Successfully read!'),
+            'alert-type' => 'success',
+        ]);
     }
 
    

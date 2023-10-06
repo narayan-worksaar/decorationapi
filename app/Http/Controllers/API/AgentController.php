@@ -8,12 +8,15 @@ use App\Models\Service;
 use App\Models\ServiceUpdatedByAgent;
 use App\Models\SiteImage;
 use App\Models\Status;
+use App\Models\TaskAcceptDeclinedNotification;
+use App\Models\User;
 use App\Models\YesNo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 
 
 class AgentController extends Controller
@@ -136,5 +139,75 @@ class AgentController extends Controller
             "items" => $all_yes
         ],200);
     }
+    
+    public function accept_decline_task(Request $request){
+     
+        $taskAcceptDecline = new TaskAcceptDeclinedNotification();
+        $taskAcceptDecline->service_id = $request->service_id;
+        $taskAcceptDecline->agent_id = auth()->id();
+        $serviceData = Service::find($request->service_id);
+        $agnetName = User::where('id',auth()->id())->first();
+        $currentDateTime = now();
+        $taskAcceptDecline->date = $currentDateTime->toDateString();
+        $taskAcceptDecline->time = $currentDateTime->toTimeString();
+
+        $taskAcceptDecline->notification_message = $serviceData->service_code .' '. $request->notification_message . ' by the agent ' . $agnetName->name . ' on ' .  $currentDateTime->toDateString() . ', at ' . $currentDateTime->toTimeString() . ' .';
+        $taskAcceptDecline->is_accept = $request->is_accept;
+        if ($request->is_accept == 0) {
+            
+           
+            if ($serviceData) {
+        $userDeviceToken = User::find($serviceData['created_by_user_id']);       
+                //fcm start
+      
+        // dd($userDeviceToken['device_token']);
+        // Define the headers
+        $headers = [
+           'Content-Type' => 'application/json',
+           'Authorization' => 'key=' . env('FIREBASE_KEY'),
+       ];
+   
+       // Define the JSON body
+       $body = [
+           'registration_ids' => [
+               $userDeviceToken['device_token'],
+           ],
+           'notification' => [
+               'body' => $serviceData['client_name'] ."' task rejected!",
+               'title' => 'Task not accepted by installer!',
+               'android_channel_id' => 'theinstallers',
+               'sound' => true,
+           ],
+           'data' => [
+               '_is_accept' => $request->is_accept,
+            
+           ],
+       ];
+       
+       // Send the POST request
+       $response = Http::withHeaders($headers)->post('https://fcm.googleapis.com/fcm/send', $body);
+       //fcm end    
+
+            if($serviceData->assigned_agent_id == auth()->id()){
+                $serviceData->assigned_agent_id = null;
+                $serviceData->status = 1;
+                $serviceData->save();
+            }
+        }
+        }
+        // Set the current date and time
+        
+        $taskAcceptDecline->save();
+
+       
+     
+        return response()->json([
+            "status" => 200,
+            "items" => 'Successfully notified!'
+        ],200);
+        
+    }
+
+    
    
 }

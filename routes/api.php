@@ -63,6 +63,7 @@ Route::group([
     Route::get("get-booking-completed-details", [BookingController::class, "get_booking_completed_details"]);
 
     Route::get("all-yes-no", [AgentController::class, "all_yes_no"]);
+    Route::post("accept-decline-task", [AgentController::class, "accept_decline_task"]);
     
 });
 
