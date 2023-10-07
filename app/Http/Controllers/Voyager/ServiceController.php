@@ -271,9 +271,16 @@ class ServiceController extends VoyagerBaseController
         $serviceId = $request->input('ser_id');
         $updateAgent = Service::find($serviceId);
         $userDeviceToken = User::find($updateAgent['created_by_user_id']);
-        $agentDeviceToken = User::find($updateAgent['assigned_agent_id']);
+
+        // $agentDeviceToken = User::find($updateAgent['assigned_agent_id']);
         // dd($userDeviceToken->device_token . ' and ' . $agentDeviceToken['device_token']);
-        
+               // Check if assigned agent exists
+        if (!is_null($updateAgent->assigned_agent_id)) {
+            $agentDeviceToken = User::find($updateAgent->assigned_agent_id);
+        } else {
+            $agentDeviceToken = User::find($request->agent_id);
+        }
+
         $updateAgent->assigned_agent_id = $request->input('agent_id');
         $updateAgent->status = 2;
         $updateAgent->update();
@@ -314,6 +321,9 @@ class ServiceController extends VoyagerBaseController
             ],
         ];
         //Send notification to dealer when agent assigned end
+
+  
+
 
           // Define the JSON body
           $bodyAssignedAgent = [
