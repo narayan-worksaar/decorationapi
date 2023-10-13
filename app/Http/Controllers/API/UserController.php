@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use App\Rules\UniqueMobileNumber;
 
 class UserController extends Controller
 {
@@ -24,19 +26,39 @@ class UserController extends Controller
 
     public function update_dealer_details(Request $request)
     {
+        
+        
+        $dealerUpdate = User::find($request->id);
+        
+     
         $validator = Validator::make($request->all(),[
-            'image' => 'mimes:jpeg,png,jpg,gif,svg|max:1024',
+            'avatar' => 'mimes:jpeg,png,jpg,gif,svg|max:1024',
             "name" => "required",
-            "mobile_number" => "required",
+            'email' => [
+                'nullable', // Allow the email to be null or empty
+                'email',
+                Rule::unique('users')->ignore($request->id)->where(function ($query) use ($request) {
+                    return $request->email !== null && $request->email !== '';
+                }),
+            ],
+         
+
+            'mobile_number' => [
+                'required',
+                $request->mobile_number === $dealerUpdate->mobile_number
+                    ? 'nullable'
+                    : new UniqueMobileNumber(),
+            ],
+
         ]);
 
         if($validator->fails()){
             return response()->json($validator->errors(), 400);
         }
     
-        $dealerUpdate = User::find($request->id);
+       
         
-        if(!$dealerUpdate){
+        if(!$dealerUpdate){ 
 
             return response()->json([
                 "message" => "Data not found.",
@@ -51,19 +73,31 @@ class UserController extends Controller
         }
 
     
-        if($request->hasFile('image')){
-            $fileNameImage = time().".".$request->file('image')->getClientOriginalExtension();
-            $request->file('image')->storeAs('public/images',$fileNameImage);
-            $dealerUpdate->image = $fileNameImage;
+        if($request->hasFile('avatar')){
+            $fileNameImage = time().".".$request->file('avatar')->getClientOriginalExtension();
+            $request->file('avatar')->storeAs('public/users',$fileNameImage);
+            $dealerUpdate->avatar = "users/".$fileNameImage;
         }
 
         $dealerUpdate->name = $request->name;
+        $dealerUpdate->address = $request->address;
+      
+        if ($request->has('email')) {
+            $dealerUpdate->email = $request->email;
+        }
+        
         $dealerUpdate->mobile_number = $request->mobile_number;
+        
+        if ($request->has('password') && !empty($request->password)) {
+            
+            $dealerUpdate->password = bcrypt($request->password);
+        }
+
         $dealerUpdate->alternate_mobile_number = $request->alternate_mobile_number;
         
         $dealerUpdate->gender_id = $request->gender_id;
         $dealerUpdate->date_of_birth = $request->date_of_birth;
-        $dealerUpdate->address = $request->address;
+      
         $dealerUpdate->landmark = $request->landmark;
         $dealerUpdate->city = $request->city;
         $dealerUpdate->state = $request->state;
