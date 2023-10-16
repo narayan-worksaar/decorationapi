@@ -71,6 +71,7 @@ class AgentController extends Controller
                 
                 $measure = new FormImage();
                 $measure->service_updated_by_agent_id = $updateNewService->id; 
+                
              
                 if($formData['form_image_file']){
                 $formImage = time() . '_' . Str::random(10) . '.' .  $formData['form_image_file']->getClientOriginalExtension();
@@ -89,6 +90,7 @@ class AgentController extends Controller
                 $image->save(public_path('storage/images/' . $formImage), 60);
                 }
                 $measure->form_image_file = $formImage;
+                $measure->caption = $formData['caption']; 
 
                 $measure->save();
                
