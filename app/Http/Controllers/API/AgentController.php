@@ -124,6 +124,56 @@ class AgentController extends Controller
             }
            
         }
+
+        $taskCompleted = new TaskAcceptDeclinedNotification();
+        $taskCompleted->service_id = $request->service_id;
+        $taskCompleted->agent_id = auth()->id();
+
+        $serviceData = Service::find($request->service_id);
+    
+
+        $agnetName = User::where('id',auth()->id())->first();
+        $currentDateTime = now();
+        $taskCompleted->date = $currentDateTime->toDateString();
+        $taskCompleted->time = $currentDateTime->toTimeString();
+        $taskCompleted->notification_message = $serviceData->service_code . ' task completed by the agent ' . $agnetName->name . ' on ' .  $currentDateTime->toDateString() . ', at ' . $currentDateTime->toTimeString() . ' .';
+        
+        if ($serviceData) {
+         $userDeviceToken = User::find($serviceData['created_by_user_id']);       
+         //fcm start
+      
+        // Define the headers
+        $headers = [
+           'Content-Type' => 'application/json',
+           'Authorization' => 'key=' . env('FIREBASE_KEY'),
+       ];
+   
+       // Define the JSON body
+       $body = [
+           'registration_ids' => [
+               $userDeviceToken['device_token'],
+           ],
+           'notification' => [
+               'body' => $serviceData['client_name'] ."' task completed!",
+               'title' => 'Task completed by installer!',
+               'android_channel_id' => 'theinstallers',
+               'sound' => true,
+           ],
+           'data' => [
+               'notification_message' => 'completed',
+            
+           ],
+       ];
+       
+       // Send the POST request
+       $response = Http::withHeaders($headers)->post('https://fcm.googleapis.com/fcm/send', $body);
+       //fcm end    
+
+         
+        }
+        
+        $taskCompleted->is_accept = 1;
+        $taskCompleted->save();
         
         return response()->json([
             "message" => "Service updated successfully!",
@@ -151,13 +201,34 @@ class AgentController extends Controller
         $taskAcceptDecline->date = $currentDateTime->toDateString();
         $taskAcceptDecline->time = $currentDateTime->toTimeString();
 
+        if ($request->notification_message == 'accepted') {
         $taskAcceptDecline->notification_message = $serviceData->service_code .' '. $request->notification_message . ' by the agent ' . $agnetName->name . ' on ' .  $currentDateTime->toDateString() . ', at ' . $currentDateTime->toTimeString() . ' .';
+        
+        }elseif ($request->notification_message == 'reached on site') {
+         $taskAcceptDecline->notification_message = $serviceData->service_code .' ' . 'agent ' . $agnetName->name .' ' . $request->notification_message . ' on ' .  $currentDateTime->toDateString() . ', at ' . $currentDateTime->toTimeString() . ' .';
+                                                                        
+         
+        }elseif ($request->notification_message == 'task started') {
+            $taskAcceptDecline->notification_message = $serviceData->service_code .' agent '. $agnetName->name .' ' .  $request->notification_message . ' on ' .  $currentDateTime->toDateString() . ', at ' . $currentDateTime->toTimeString() . ' .';
+                                                    
+                                                    
+        }
+        elseif ($request->notification_message == 'task postponed') {
+            $taskAcceptDecline->notification_message = $serviceData->service_code .' ' . $request->notification_message . ' due to ' . $request->reason .  ' .' . ' This was reported by Agent ' . $agnetName->name . ' on ' .  $currentDateTime->toDateString() . ', at ' . $currentDateTime->toTimeString() . ' .';
+        }
+        elseif ($request->notification_message == 'task canceled') {
+            $taskAcceptDecline->notification_message = $serviceData->service_code .' ' . $request->notification_message . ' due to ' . $request->reason .  ' .' . ' This was reported by Agent ' . $agnetName->name . ' on ' .  $currentDateTime->toDateString() . ', at ' . $currentDateTime->toTimeString() . ' .';
+        } 
+        else{
+        $taskAcceptDecline->notification_message = $serviceData->service_code .' '. $request->notification_message . ' by the agent ' . $agnetName->name . ' on ' .  $currentDateTime->toDateString() . ', at ' . $currentDateTime->toTimeString() . ' .' .'Because '. $request->reason;
+        }
+        
         $taskAcceptDecline->is_accept = $request->is_accept;
-        if ($request->is_accept == 0) {
+        if ($request->notification_message == 'accepted') {
             
            
             if ($serviceData) {
-        $userDeviceToken = User::find($serviceData['created_by_user_id']);       
+         $userDeviceToken = User::find($serviceData['created_by_user_id']);       
                 //fcm start
       
         // dd($userDeviceToken['device_token']);
@@ -173,13 +244,13 @@ class AgentController extends Controller
                $userDeviceToken['device_token'],
            ],
            'notification' => [
-               'body' => $serviceData['client_name'] ."' task rejected!",
-               'title' => 'Task not accepted by installer!',
+               'body' => $serviceData['client_name'] ."' task accepted!",
+               'title' => 'Task accepted by installer!',
                'android_channel_id' => 'theinstallers',
                'sound' => true,
            ],
            'data' => [
-               '_is_accept' => $request->is_accept,
+               'notification_message' => $request->notification_message,
             
            ],
        ];
@@ -188,14 +259,19 @@ class AgentController extends Controller
        $response = Http::withHeaders($headers)->post('https://fcm.googleapis.com/fcm/send', $body);
        //fcm end    
 
+         
+        }
+        }
+        // Set the current date and time
+        if ($request->is_accept == '0') {
             if($serviceData->assigned_agent_id == auth()->id()){
                 $serviceData->assigned_agent_id = null;
                 $serviceData->status = 1;
                 $serviceData->save();
             }
+
         }
-        }
-        // Set the current date and time
+        
         
         $taskAcceptDecline->save();
 
