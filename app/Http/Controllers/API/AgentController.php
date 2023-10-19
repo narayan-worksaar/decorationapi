@@ -120,6 +120,7 @@ class AgentController extends Controller
                 $image->save(public_path('storage/images/' . $siteImage), 60);
                 }
                 $uploadSite->site_image_file = $siteImage;
+                $uploadSite->caption = $siteData['caption']; 
 
                 $uploadSite->save();
                
