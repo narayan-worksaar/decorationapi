@@ -200,7 +200,8 @@
                  </div>
  
                  <div class="panel-body" style="padding-top:0;">
-                 <p>  {{ $agentService['statusData']['status_list'] }} </p>
+                 <p>{{ $agentService['statusData']['status_list'] ?? 'Default Value' }}</p>
+
                  </div>
 
                 <hr style="margin:0;">
@@ -216,7 +217,8 @@
                           <a href="{{ asset('public/storage/images/'.$image->form_image_file) }}" data-lightbox="models" data-title="{{ $image->form_image_file }}">  
                             <img src="{{ asset('public/storage/images/'.$image->form_image_file) }}" width="200px;" height="200px">
                           </a>
-                          
+                          <p>{{ $image->caption ?? '' }}</p>
+
                           
                           <!-- Add a download button -->
                           <a href="{{ asset('public/storage/images/'.$image->form_image_file) }}" download="{{ $image->form_image_file }}">
@@ -245,7 +247,7 @@
                                 <img src="{{ asset('public/storage/images/'.$image->site_image_file) }}" width="200px;" height="200px">
                               </a>
                               
-                              
+                              <p>{{ $image->caption ?? '' }}</p>
                               <!-- Add a download button -->
                               <a href="{{ asset('public/storage/images/'.$image->site_image_file) }}" download="{{ $image->site_image_file }}">
                                   
