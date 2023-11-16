@@ -11,13 +11,18 @@ class TaskAcceptDeclinedNotification extends Model
     protected $table ="notifications";
     protected $fillable = [
         'service_id',
-        'user_id',
+        'agent_id',
         'notification_message',
         'is_accept',
         'is_read',
         'date',
         'time'
     ];
+
+    public function installerName() 
+    {
+        return $this->hasOne(User::class,'id', 'agent_id')->select('id','name','avatar');
+    }
 
     
 }

@@ -1,4 +1,17 @@
 @extends('voyager::master')
+<style>
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      border: 1px solid #ddd;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px;
+    }
+    tr:nth-child(even){background-color: #f2f2f2}
+</style>
 
 @section('page_title', __('voyager::generic.view').' '.$dataType->getTranslatedAttribute('display_name_singular'))
 <link href="{{ url('public/preview_assets/lightbox.css') }}" rel="stylesheet">
@@ -263,8 +276,34 @@
 
                 <hr style="margin:0;">
 
-                <!-- end 1st data -->
+                <!-- end 2nd data -->
                 @endforeach
+                 <!-- start notifications data -->
+                <div class="panel-heading" style="border-bottom:0;">
+                    <h3 class="panel-title">Task status by agent</h3>
+                 </div>
+                 <div style="overflow-x:auto; margin-left: 20px; margin-right: 20px;">
+                    <table>
+                      <tr>
+                        <th>Agent Name</th>
+                        <th>Status</th>
+                        
+                      </tr>
+                      @foreach ($installerNotification as $notification)  
+                      <tr>
+                        @if ($notification['installerName'])
+                        <td>{{ $notification['installerName']['name'] }}</td> 
+                        @else
+                        <td>N/A</td> 
+                        @endif
+
+                        <td>{{ $notification['notification_message'] }}</td>
+                      </tr>
+                      @endforeach
+                      
+                    </table>
+                  </div>
+                  <!-- end notifications data -->
 
                 </div>
             </div>

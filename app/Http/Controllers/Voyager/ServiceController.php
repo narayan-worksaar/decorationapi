@@ -408,10 +408,14 @@ class ServiceController extends VoyagerBaseController
         ->with('siteImageData')
         
         ->get();
+
+        $installerNotification= TaskAcceptDeclinedNotification::where('service_id',$dataTypeContent->id)
+        ->with('installerName')
+        ->get();
         
         // dd($agentServiceUpdatedData);
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'isSoftDeleted','agentServiceUpdatedData'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'isSoftDeleted','agentServiceUpdatedData','installerNotification'));
     }
 
     public function read_notification (Request $request){
