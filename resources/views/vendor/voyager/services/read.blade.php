@@ -305,6 +305,39 @@
                   </div>
                   <!-- end notifications data -->
 
+                   <!-- start Assigned Agent History data -->
+                <div class="panel-heading" style="border-bottom:0;">
+                    <h3 class="panel-title">Assigned agent history</h3>
+                 </div>
+                 <div style="overflow-x:auto; margin-left: 20px; margin-right: 20px;">
+                    <table>
+                      <tr>
+                        <th>Agent Name</th>
+                        <th>Assigned Date</th>
+                        <th>Assigned Time</th>
+                        <th>Assigned by</th>
+                      </tr>
+                      @foreach ($assignedAgentHistory as $agentHistory)  
+                      <tr>
+                        @if ($agentHistory['agent_name'])
+                        <td>{{ $agentHistory['agent_name']['name'] }}</td> 
+                        @else
+                        <td>N/A</td> 
+                        @endif
+                        <td>{{ date('d-M-Y', strtotime($agentHistory['assigned_date'])) }}</td>
+                        <td>{{ \Carbon\Carbon::parse($agentHistory['assigned_time'])->format('g:i:s A')}}</td>
+                        @if ($agentHistory['assignedByUser'])
+                        <td>{{ $agentHistory['assignedByUser']['name'] }}</td> 
+                        @else
+                        <td>N/A</td> 
+                        @endif
+                      </tr>
+                      @endforeach
+                      
+                    </table>
+                  </div>
+                  <!-- end notifications data -->
+
                 </div>
             </div>
         </div>

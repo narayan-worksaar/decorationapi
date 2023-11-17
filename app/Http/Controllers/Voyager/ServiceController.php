@@ -412,10 +412,15 @@ class ServiceController extends VoyagerBaseController
         $installerNotification= TaskAcceptDeclinedNotification::where('service_id',$dataTypeContent->id)
         ->with('installerName')
         ->get();
+
+        $assignedAgentHistory= AgentAssigned::where('service_id',$dataTypeContent->id)
+        ->with('agent_name')
+        ->with('assignedByUser')
+        ->get();
         
         // dd($agentServiceUpdatedData);
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'isSoftDeleted','agentServiceUpdatedData','installerNotification'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'isSoftDeleted','agentServiceUpdatedData','installerNotification','assignedAgentHistory'));
     }
 
     public function read_notification (Request $request){
