@@ -221,12 +221,22 @@ class AgentController extends Controller
         }
         elseif ($request->notification_message == 'task canceled') {
             $taskAcceptDecline->notification_message = $serviceData->service_code .' ' . $request->notification_message . ' due to ' . $request->reason .  ' .' . ' This was reported by Agent ' . $agnetName->name . ' on ' .  $currentDateTime->toDateString() . ', at ' . $currentDateTime->toTimeString() . ' .';
-        } 
+
+        }elseif ($request->notification_message == 'not accepted') {
+            $taskAcceptDecline->notification_message = $serviceData->service_code .' ' . $request->notification_message . ' due to ' . $request->reason .  ' .' . ' This was reported by Agent ' . $agnetName->name . ' on ' .  $currentDateTime->toDateString() . ', at ' . $currentDateTime->toTimeString() . ' .';
+        }  
         else{
+
         $taskAcceptDecline->notification_message = $serviceData->service_code .' '. $request->notification_message . ' by the agent ' . $agnetName->name . ' on ' .  $currentDateTime->toDateString() . ', at ' . $currentDateTime->toTimeString() . ' .' .'Because '. $request->reason;
         }
+
+        if ($request->notification_message == 'accepted') {
+            $taskAcceptDecline->is_accept = '1';
+        }elseif($request->notification_message == 'not accepted'){
+            $taskAcceptDecline->is_accept = '0';
+        }
         
-        $taskAcceptDecline->is_accept = $request->is_accept;
+        $taskAcceptDecline->reason = $request->reason;
         if ($request->notification_message == 'accepted') {
             
            
@@ -266,7 +276,16 @@ class AgentController extends Controller
         }
         }
         // Set the current date and time
-        if ($request->is_accept == '0') {
+        // if ($request->is_accept == '0') {
+        //     if($serviceData->assigned_agent_id == auth()->id()){
+        //         $serviceData->assigned_agent_id = null;
+        //         $serviceData->status = 1;
+        //         $serviceData->save();
+        //     }
+
+        // }
+        
+        if ($request->notification_message == 'not accepted') {
             if($serviceData->assigned_agent_id == auth()->id()){
                 $serviceData->assigned_agent_id = null;
                 $serviceData->status = 1;
