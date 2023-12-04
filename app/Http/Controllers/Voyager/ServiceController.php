@@ -8,6 +8,7 @@ namespace App\Http\Controllers\Voyager;
 use App\Models\AgentAssigned;
 use App\Models\Service;
 use App\Models\ServiceUpdatedByAgent;
+use App\Models\Status;
 use App\Models\TaskAcceptDeclinedNotification;
 use App\Models\User;
 use Exception;
@@ -34,6 +35,8 @@ class ServiceController extends VoyagerBaseController
 
     public function index(Request $request)
     {
+        
+        $allStatus = Status::get();
          //get user id
          $loggedInUserId =  auth()->id();
          $loggedInUserCoordinate = User::where('id',$loggedInUserId)->select('coordinate')->first();
@@ -213,7 +216,8 @@ class ServiceController extends VoyagerBaseController
             'usesSoftDeletes',
             'showSoftDeleted',
             'showCheckboxColumn',
-            'agentData'
+            'agentData',
+            'allStatus'
         ));
     }
 

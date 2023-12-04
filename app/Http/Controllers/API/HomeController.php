@@ -13,11 +13,30 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL; 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
+
+
 class HomeController extends Controller
 {
+    public function place_api_autocomplete(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'search_text' => 'required',
+        ]);
+
+       
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 403);
+        }
+
+        $response = Http::get('https://maps.googleapis.com/maps/api/place/autocomplete/json?input='.$request['search_text'].'&key='.'AIzaSyBgcejM6KxDF1mfBl6icxy2WlZ84WR1shs');
+        
+        return $response->json();
+    }
+
     public function user_types(){
     
         $usertypedata = UserType::whereIn('id', [2, 3])->select('id','usertype')->get();

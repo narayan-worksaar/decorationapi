@@ -15,6 +15,7 @@ class AddReasonToNotificationsTable extends Migration
     {
         Schema::table('notifications', function (Blueprint $table) {
             $table->string('reason')->nullable();
+            $table->string('notification_type')->nullable();
         });
     }
 
@@ -27,6 +28,7 @@ class AddReasonToNotificationsTable extends Migration
     {
         Schema::table('notifications', function (Blueprint $table) {
             $table->dropColumn('reason');
+            $table->dropColumn('notification_type');
         });
     }
 }

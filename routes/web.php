@@ -62,7 +62,8 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::get("/dealer", [DealerController::class, "index"])->name("dealer.index");
     Route::get("read-notification/{id}", [ServiceController::class, "read_notification"]);
-
+       
+    
     
 });
 

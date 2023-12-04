@@ -237,8 +237,9 @@ class AgentController extends Controller
         }
         
         $taskAcceptDecline->reason = $request->reason;
+        $taskAcceptDecline->notification_type = $request->notification_message;
+         
         if ($request->notification_message == 'accepted') {
-            
            
             if ($serviceData) {
          $userDeviceToken = User::find($serviceData['created_by_user_id']);       
@@ -293,6 +294,17 @@ class AgentController extends Controller
             }
 
         }
+
+        if ($request->notification_message == 'task canceled') {
+            if($serviceData->assigned_agent_id == auth()->id()){
+                $serviceData->assigned_agent_id = null;
+                $serviceData->status = 4;
+                $serviceData->save();
+            }
+
+        }
+
+              
         
         
         $taskAcceptDecline->save();

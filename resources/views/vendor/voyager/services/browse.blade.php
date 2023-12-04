@@ -44,6 +44,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-bordered">
+                    
                     <div class="panel-body">
                         @if ($isServerSide)
                             <form method="get" class="form-search">
@@ -77,6 +78,21 @@
                             </form>
                         @endif
                         <div class="table-responsive">
+                      
+                            <div class="form-group  col-md-6 ">
+                                <label class="control-label" for="name">Status</label>
+                                <select class="form-control" name="status_data">
+                                    <option value="" selected="selected">None</option>  
+                                    @foreach ($allStatus as $status)
+                                   
+                                   <option value="{{ $status->status_list }}">{{ $status->status_list }}</option>     
+                                    @endforeach
+                                   
+                                </select>
+                            
+                             </div>
+
+                            
                             <table id="dataTable" class="table table-hover">
                                 <thead>
                                     <tr>
@@ -377,6 +393,7 @@
     @endif
     <script>
         $(document).ready(function () {
+         
             @if (!$dataType->server_side)
                 var table = $('#dataTable').DataTable({!! json_encode(
                     array_merge([
@@ -388,6 +405,22 @@
                     ],
                     config('voyager.dashboard.data_tables', []))
                 , true) !!});
+
+                //filter start
+
+                $('select[name="status_data"]').change(function () {
+                var statusId = $(this).val();
+                console.log(statusId);    
+                // Clear the existing search
+                table.search('').draw();
+
+                // Apply the filter based on the selected status
+                table.columns(8).search(statusId).draw(); 
+                // Assuming the status column is at index 7, update it accordingly
+                });
+
+                //filter end
+
             @else
                 $('#search-input select').select2({
                     minimumResultsForSearch: Infinity
