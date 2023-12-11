@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Service extends Model
 {
@@ -88,5 +89,37 @@ class Service extends Model
     {
         return $this->hasMany(ServiceUpdatedByAgent::class,'service_id', 'id')->with('formImageData')->with('siteImageData');
     }
+
+
+    public function statusData() 
+    {
+        return $this->hasOne(Status::class,'id', 'status');
+    }
+
+    public function InstallerData() 
+    {
+        return $this->hasOne(User::class,'id', 'assigned_agent_id');
+    }
+
+    public function CreatedByData() 
+    {
+        return $this->hasOne(User::class,'id', 'created_by_user_id');
+    }
+
+    public function serviceAccept() 
+    {
+        return $this->hasMany(TaskAcceptDeclinedNotification::class, 'service_id', 'id');
+    }
+    
+    public function getAcceptedAttribute()
+    {
+        // Use a dynamic attribute to get the accepted status
+        $notification = $this->serviceAccept->where('agent_id', auth()->id())
+                                           ->where('notification_type', 'accepted')
+                                           ->first();
+    
+        return $notification ? 1 : 0;
+    }
+    
 
 }

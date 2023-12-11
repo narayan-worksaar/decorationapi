@@ -78,21 +78,70 @@
                             </form>
                         @endif
                         <div class="table-responsive">
+                        <form method="get" action="" class="form-search col-md-12" id="filterForm">    
                       
-                            <div class="form-group  col-md-6 ">
+                            <div class="form-group  col-md-3 ">
                                 <label class="control-label" for="name">Status</label>
-                                <select class="form-control" name="status_data">
+                                <select class="form-control" name="status_data" id="statusData">    
                                     <option value="" selected="selected">None</option>  
                                     @foreach ($allStatus as $status)
-                                   
-                                   <option value="{{ $status->status_list }}">{{ $status->status_list }}</option>     
+                                   <option value="{{ $status->id }}" {{ request('status_data') == $status->id ? 'selected' : '' }}>
+                                    {{ $status->status_list }}
+                                </option>
                                     @endforeach
-                                   
                                 </select>
                             
-                             </div>
+                            </div>
 
+                            <div class="form-group  col-md-3 ">
+                                <label class="control-label" for="name">Agent</label>
+                                <select class="form-control" name="agent_data" id="agentData">
+                                    <option value="" selected="selected">None</option>  
+                                    @foreach ($allAgent as $agent)
+                                   <option value="{{ $agent->id }}" {{ request('agent_data') == $agent->id ? 'selected' : '' }}>
+                                    {{ $agent->name }}
+                                </option>
+                                    @endforeach
+                                </select>
                             
+                            </div>
+
+                            <div class="form-group  col-md-3 ">
+                                <label class="control-label" for="name">Dealer</label>
+                                <select class="form-control" name="dealer_data" id="dealerData">
+                                    <option value="" selected="selected">None</option>  
+                                    @foreach ($allDealer as $dealer)
+                                   <option value="{{ $dealer->id }}" {{ request('dealer_data') == $dealer->id ? 'selected' : '' }}>
+                                    {{ $dealer->name }}
+                                </option>
+                                    @endforeach
+                                </select>
+                            
+                            </div>
+                            
+                             <div class="form-group col-md-3">
+                                <label class="control-label" for="start_date">Start Date</label>
+                                <input type="date" name="start_date" id="startDate" class="form-control">
+                            </div>
+                            
+                            <div class="form-group col-md-3">
+                                <label class="control-label" for="end_date">End Date</label>
+                                <input type="date" name="end_date" id="endDate" class="form-control">
+                            </div>
+                            
+                            <div class="form-group col-md-3">
+                                <br>
+                              <!-- Filter button -->
+                            <button type="submit" name="action" value="filter" class="btn btn-primary">Filter</button>
+                            <!-- Export button -->
+                            <button type="submit" name="action" value="export" class="btn btn-primary">Export</button>
+                            <!-- Clear button -->
+                            <button type="button" class="btn btn-secondary" onclick="clearFilter()">Clear</button>
+
+                            </div>
+
+                        </form>
+    
                             <table id="dataTable" class="table table-hover">
                                 <thead>
                                     <tr>
@@ -274,9 +323,7 @@
                                         @endforeach
                                         <td>
                                         
-                                            {{-- <a href="{{ url('/admin/view-agent-task/'.$data->id) }}" title="View agent task" class="btn btn-sm btn-warning pull-right view">
-                                                <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">View</span>
-                                            </a> --}}
+                                           
                                              
                                             <button type="button" value="{{ $data->id }}" class="btn btn-sm btn-primary pull-right view assignAgent">
                                                 <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm ">Assign</span>
@@ -361,13 +408,15 @@
                 <div class="modal-body">
                     
                     <label for="target">Agent Name</label>
-                    <select id="agent_id" class="form-control" name="agent_id">
+                    <select id="agent_id" class="form-control select2" name="agent_id" autocomplete="on">
                         @foreach($agentData as $agentData)
                         <option value="{{ $agentData->id }}">{{ $agentData->name }}</option>
                         @endforeach
                     </select>
                     <input type="hidden" name="ser_id" id="ser_id" value="">
                 </div>
+
+                
                 <div class="modal-footer">
                     <input type="submit" class="btn btn-success pull-right delete-confirm__" value="Update">
                     <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancel</button>
@@ -406,20 +455,6 @@
                     config('voyager.dashboard.data_tables', []))
                 , true) !!});
 
-                //filter start
-
-                $('select[name="status_data"]').change(function () {
-                var statusId = $(this).val();
-                console.log(statusId);    
-                // Clear the existing search
-                table.search('').draw();
-
-                // Apply the filter based on the selected status
-                table.columns(8).search(statusId).draw(); 
-                // Assuming the status column is at index 7, update it accordingly
-                });
-
-                //filter end
 
             @else
                 $('#search-input select').select2({
@@ -502,6 +537,77 @@
     });
     });
 </script> 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize the selected status value on page load
+        updateSelectedStatus();
+    });
+
+    function clearFilter() {
+        // Debugging: Log a message to check if the function is called
+        console.log('Clearing Filter');
+
+        // Clear the selected status value
+        document.getElementById('statusData').value = '';
+        document.getElementById('agentData').value = '';
+        document.getElementById('dealerData').value = '';
+        document.getElementById('startDate').value = '';
+        document.getElementById('endDate').value = '';
+                        
+        // Submit the form with the 'filter' action
+        document.getElementById('filterForm').action = '';
+        document.getElementById('filterForm').submit();
+    }
+
+    function updateSelectedStatus() {
+        // Update the selected status value based on the query parameter
+        const statusData = new URLSearchParams(window.location.search).get('status_data');
+        document.getElementById('statusData').value = statusData || '';
+
+        const agentData = new URLSearchParams(window.location.search).get('agent_data');
+        document.getElementById('agentData').value = agentData || '';
+
+        const dealerData = new URLSearchParams(window.location.search).get('dealer_data');
+        document.getElementById('dealerData').value = dealerData || '';
+
+        const startDate = new URLSearchParams(window.location.search).get('start_date');
+        document.getElementsByName('start_date')[0].value = startDate || '';
+
+        const endDate = new URLSearchParams(window.location.search).get('end_date');
+        document.getElementsByName('end_date')[0].value = endDate || '';
+        
+        // Debugging: Log the updated selected status value
+        console.log('Updated Status:', document.getElementById('statusData').value);
+    }
+</script>
+
+<script>
+    // Make sure to include the jQuery library and Select2 script
+
+    $(document).ready(function () {
+      
+        $('#statusData').select2({
+            placeholder: 'Search for a status',
+            allowClear: true, 
+            minimumResultsForSearch: 2 
+        });
+
+        $('#agentData').select2({
+            placeholder: 'Search for a agent',
+            allowClear: true, 
+            minimumResultsForSearch: 2 
+        });
+
+        $('#dealerData').select2({
+            placeholder: 'Search for a dealer',
+            allowClear: true, 
+            minimumResultsForSearch: 2 
+        });
+
+
+    });
+</script>
 
 
     

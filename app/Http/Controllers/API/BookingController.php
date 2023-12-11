@@ -304,7 +304,8 @@ class BookingController extends Controller
         ],200);
 
     }
-
+    
+    
     public function all_assigned_service(Request $request){
       
         $all_assigned_service = Service::orderBy('id', 'DESC')
@@ -312,6 +313,8 @@ class BookingController extends Controller
             ->where('status', 2)
             ->with('tasktype')
             ->with('serviceCreator')
+            ->with('serviceAccept')
+            
             ->paginate(10);
 
         return response()->json([
@@ -319,6 +322,10 @@ class BookingController extends Controller
             "items" => $all_assigned_service
         ], 200);
     }
+    
+
+    
+    
     
     public function all_on_going_booking(){
       
