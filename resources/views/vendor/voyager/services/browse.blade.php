@@ -392,13 +392,15 @@
 
     {{-- ------------- assign agent modal ----------------- --}}
 
-<div class="modal modal-info fade in" tabindex="-1" id="assignAgentModal" role="dialog" aria-hidden="true">
+    <div class="modal modal-info fade in" id="assignAgentModal" role="dialog" aria-hidden="true">
    
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                <h4 id="m_hd_edit" class="modal-title" style=""><i class="voyager-edit"></i> Assign Agent</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title" style=""><i class="voyager-edit"></i> Assign Agent</h4>
             </div>
             <form action="{{ url('/admin/update-agent') }}" method="POST" >
                 @csrf
@@ -424,7 +426,7 @@
             </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
-</div>
+    </div>
 
 {{-- ----------------assign agent modal end --------------------- --}}
 @stop
@@ -604,6 +606,9 @@
             allowClear: true, 
             minimumResultsForSearch: 2 
         });
+
+       
+      
 
 
     });
