@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\ColumnDefinition;
 use Illuminate\Support\Facades\DB;
+use App\Models\Whatsappgroup;
+use Illuminate\Support\Facades\Http;
 
 class BookingController extends Controller
 {
@@ -85,35 +87,85 @@ class BookingController extends Controller
 
         return null;
     }
- 
 
     public function store_service_booking(Request $request)
     {
-        $existingRowsCount = Service::count();
-        $idNumber = $existingRowsCount + 1;
-        
-        $loggedInUser = User::find(auth()->id());
+        try {
 
-        $addNewService = new Service();
-        $addNewService->fill($request->all()); 
-        $addNewService->save();
+            $taskTypeData=TaskType::find($request->task_type_id);
+            
+            $existingRowsCount = Service::count();
+            $idNumber = $existingRowsCount + 1;
+            
+            $loggedInUser = User::find(auth()->id());
+            
+            $addNewService = new Service();
+            $addNewService->fill($request->all()); 
+            $addNewService->save();
+    
+            $currentYear = date('Y');
+            
+            $addNewService->service_code = "SCode-{$currentYear}-{$idNumber}";
+            $addNewService->created_by_user_id = auth()->id();
+    
+            if($loggedInUser->employee_of_dealer_id != null){
+                $addNewService->employee_of = $loggedInUser->employee_of_dealer_id;
+                $addNewService->dealer_id = $loggedInUser->employee_of_dealer_id;
+                $addNewService->save(); 
+            }
+            if($loggedInUser->employee_of_dealer_id != null){
+                $addNewService->dealer_id = $loggedInUser->employee_of_dealer_id;
+                $addNewService->save(); 
+            }else{
+                $addNewService->dealer_id = auth()->id();
+                $addNewService->save(); 
+            }
+    
+            $addNewService->save();
 
-        $currentYear = date('Y');
-        
-        $addNewService->service_code = "SCode-{$currentYear}-{$idNumber}";
-        $addNewService->created_by_user_id = auth()->id();
+            //tryin to send whatsapp group message
 
-        if($loggedInUser->employee_of_dealer_id != null){
-            $addNewService->employee_of = $loggedInUser->employee_of_dealer_id;
-            $addNewService->save(); 
+            $groupIdData = Whatsappgroup::where('dealer_id', $addNewService->dealer_id)
+            ->with('instance_data')
+            ->first();
+
+            // dd($groupIdData);
+
+            if($groupIdData != null){
+                 // Your existing parameters
+            $params = [
+                'token' => $groupIdData['instance_data']['token_id'],
+                'to' => $groupIdData->group_id,
+                'body' => "New Booking: " . $addNewService->service_code . "\n" . "Client Name: " . $addNewService->client_name . "\n" . "Mobile No: " .$addNewService->client_mobile_number . "\n" . "Service Date & Time: " .$addNewService->date_time . "\n" . "Service Type: " .$taskTypeData->task_name . "\n" . "Address: " .$addNewService->address,
+                'priority' => '10',
+                'referenceId' => '',
+                'msgId' => '',
+                'mentions' => '',
+            ];
+
+            $url = 'https://api.ultramsg.com/' . $groupIdData['instance_data']['instance_id'] . '/messages/chat';
+
+            $response = Http::post($url, $params);
+            }
+
+            //end
+
+            return response()->json([
+                "message" => "New service booking is successful!",
+                "status" => 200,
+            ], 200);
+
+        } catch (\Exception $e) {
+            // Return error response in JSON format
+            return response()->json([
+                "message" => 'Error: ' . $e->getMessage(),
+                "status" => 500,
+            ], 500);
         }
-
-        $addNewService->save();
-        return response()->json([
-            "message" => "New service booking is successful!",
-            "status" => 200,
-        ], 200);
+       
     }
+ 
+    
     /*
     public function store_service_booking(Request $request)
     {
@@ -283,6 +335,7 @@ class BookingController extends Controller
 
         }
 
+        try {
         $serviceUpdate->address = $request->address;
         $serviceUpdate->client_name = $request->client_name;
         $serviceUpdate->client_email_address = $request->client_email_address;
@@ -296,12 +349,51 @@ class BookingController extends Controller
         $serviceUpdate->notes = $request->notes; 
         $serviceUpdate->coordinate = $request->coordinate;    
         $serviceUpdate->save();
+
+        
+         //tryin to send whatsapp group message    
+        $taskTypeData=TaskType::find($serviceUpdate->task_type_id);   
+        
+        $groupIdData = Whatsappgroup::where('dealer_id', $serviceUpdate->dealer_id)
+        ->with('instance_data')
+        ->first();
+
+        // dd($groupIdData);
+
+        if($groupIdData != null){
+             // Your existing parameters
+        $params = [
+            'token' => $groupIdData['instance_data']['token_id'],
+            'to' => $groupIdData->group_id,
+            'body' => "Booking Updated: " . $serviceUpdate->service_code . "\n" . "Client Name: " . $serviceUpdate->client_name . "\n" . "Mobile No: " .$serviceUpdate->client_mobile_number . "\n" . "Service Date & Time: " .$serviceUpdate->date_time . "\n" . "Service Type: " .$taskTypeData->task_name . "\n" . "Address: " .$serviceUpdate->address,
+            'priority' => '10',
+            'referenceId' => '',
+            'msgId' => '',
+            'mentions' => '',
+        ];
+
+        $url = 'https://api.ultramsg.com/' . $groupIdData['instance_data']['instance_id'] . '/messages/chat';
+
+        $response = Http::post($url, $params);
+    
+        
+        }
+            //end
         
         return response()->json([
             "message" => "Updated successfully",
             "status" => 200,
             "item" =>$serviceUpdate
         ],200);
+        } catch (\Exception $e) {
+            // Return error response in JSON format
+            return response()->json([
+                "message" => 'Error: ' . $e->getMessage(),
+                "status" => 500,
+            ], 500);
+        }
+
+        
 
     }
     

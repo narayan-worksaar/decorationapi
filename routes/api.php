@@ -7,6 +7,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BookingController;
 use App\Http\Controllers\API\HomeController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\WhatsappController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,6 +65,7 @@ Route::group([
 
     Route::get("all-yes-no", [AgentController::class, "all_yes_no"]);
     Route::post("accept-decline-task", [AgentController::class, "accept_decline_task"]);
+    Route::post("send-whatsapp-message", [WhatsappController::class, "send_whatsapp_message"]);
     
 });
 
