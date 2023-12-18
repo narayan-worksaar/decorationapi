@@ -165,6 +165,43 @@ class WhatsappController extends Controller
     }
     */
 
+     //whatsapp message start
+            
+//      $serviceDealerIdData = Service::where('id', $request->service_id)
+//      ->with('whatsapp_data')
+//      ->first();
+ 
+//   if ($serviceDealerIdData != null) {
+//      // Your existing parameters
+//      $params = [
+//          'token' => $serviceDealerIdData['whatsapp_data']['instance_data']['token_id'],
+//          'to' => $serviceDealerIdData['whatsapp_data']['group_id'],
+//          'priority' => '10',
+//          'referenceId' => '',
+//          'msgId' => '',
+//          'mentions' => '',
+//      ];
+ 
+//      // Conditionally set the 'body' parameter
+//      if ($request->notification_message == 'accepted') {
+//          $params['body'] = "Installer Task Accepted" . "\n" . "Service Code: " .  $serviceDealerIdData->service_code . "\n" . "Client Name: " . $serviceDealerIdData->client_name . "\n" . "Mobile No: " . $serviceDealerIdData->client_mobile_number;
+//      } elseif ($request->notification_message == 'reached on site') {
+//          $params['body'] = "Installer Reached On Site" . "\n" . "Service Code: " . $serviceDealerIdData->service_code . "\n" . "Client Name: " . $serviceDealerIdData->client_name . "\n" . "Mobile No: " . $serviceDealerIdData->client_mobile_number;
+//      }elseif ($request->notification_message == 'task started') {
+//          $params['body'] = "Installer Task Started" . "\n" . "Service Code: " . $serviceDealerIdData->service_code . "\n" . "Client Name: " . $serviceDealerIdData->client_name . "\n" . "Mobile No: " . $serviceDealerIdData->client_mobile_number;
+//      }elseif ($request->notification_message == 'task postponed') {
+//          $params['body'] = "Task Postponed" . "\n" . "Service Code: " . $serviceDealerIdData->service_code . "\n" . "Client Name: " . $serviceDealerIdData->client_name . "\n" . "Mobile No: " . $serviceDealerIdData->client_mobile_number . "\n" . "Reason: " .  $request->reason;
+//      }
+     
+//      // Perform the HTTP post only if 'body' is set
+//      if (isset($params['body'])) {
+//          $url = 'https://api.ultramsg.com/' . $serviceDealerIdData['whatsapp_data']['instance_data']['instance_id'] . '/messages/chat';
+//          $response = Http::post($url, $params);
+//      }
+//  }
+ 
+  //whatsapp message end
+
 
 
 }

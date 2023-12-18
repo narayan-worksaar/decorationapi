@@ -373,6 +373,7 @@ class BookingController extends Controller
         ];
 
         $url = 'https://api.ultramsg.com/' . $groupIdData['instance_data']['instance_id'] . '/messages/chat';
+        
 
         $response = Http::post($url, $params);
     

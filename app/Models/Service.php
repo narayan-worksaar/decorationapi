@@ -120,6 +120,14 @@ class Service extends Model
     
         return $notification ? 1 : 0;
     }
+
+    public function whatsapp_data()
+    {
+        return $this->hasOne(Whatsappgroup::class,'dealer_id', 'dealer_id')->with('instance_data');
+       
+    }
+
+    
     
 
 }
