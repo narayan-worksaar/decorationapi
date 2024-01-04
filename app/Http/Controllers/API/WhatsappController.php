@@ -132,19 +132,42 @@ class WhatsappController extends Controller
 
             if($groupIdData != null){
                  // Your existing parameters
-            $params = [
-                'token' => $groupIdData['instance_data']['token_id'],
-                'to' => $groupIdData->group_id,
-                'body' => "New Booking: " . $addNewService->service_code . "\n" . "Client Name: " . $addNewService->client_name . "\n" . "Mobile No: " .$addNewService->client_mobile_number . "\n" . "Service Date & Time: " .$addNewService->date_time . "\n" . "Service Type: " .$taskTypeData->task_name . "\n" . "Address: " .$addNewService->address,
-                'priority' => '10',
-                'referenceId' => '',
-                'msgId' => '',
-                'mentions' => '',
+    
+            // Convert address to latitude and longitude
+            $geocodingUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
+            $geocodingParams = [
+                'address' => urlencode($addNewService->address),
+                'key' => env('PLACE_API_KEY'),
             ];
+            $geocodingResponse = Http::get($geocodingUrl, $geocodingParams);
+            $geocodingData = $geocodingResponse->json();   
+            
+            if ($geocodingResponse->successful() && isset($geocodingData['results'][0]['geometry']['location'])) {
+                $latitude = $geocodingData['results'][0]['geometry']['location']['lat'];
+                $longitude = $geocodingData['results'][0]['geometry']['location']['lng'];
 
-            $url = 'https://api.ultramsg.com/' . $groupIdData['instance_data']['instance_id'] . '/messages/chat';
+                // Construct Google Maps URL
+                
+                $googleMapsUrl = 'https://www.google.com/maps?q=' . $latitude . ',' . $longitude . '&z=35';
 
-            $response = Http::post($url, $params);
+                // Create a clickable link in the address
+                $addressWithLink = $addNewService->address . (" . $googleMapsUrl . ");
+                
+                $params = [
+                    'token' => $groupIdData['instance_data']['token_id'],
+                    'to' => $groupIdData->group_id,
+                    'body' => "New Booking: " . $addNewService->service_code . "\n" . "Client Name: " . $addNewService->client_name . "\n" . "Mobile No: " .$addNewService->client_mobile_number . "\n" . "Service Date & Time: " .$addNewService->date_time . "\n" . "Service Type: " .$taskTypeData->task_name . "\n" . "Address: " . $addressWithLink,
+                    'priority' => '10',
+                    'referenceId' => '',
+                    'msgId' => '',
+                    'mentions' => '',
+                ];
+
+                $url = 'https://api.ultramsg.com/' . $groupIdData['instance_data']['instance_id'] . '/messages/chat';
+
+                $response = Http::post($url, $params);
+            }
+
             }
 
             //end

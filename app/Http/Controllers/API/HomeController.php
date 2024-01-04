@@ -32,7 +32,10 @@ class HomeController extends Controller
             return response()->json(['errors' => $validator->errors()], 403);
         }
 
-        $response = Http::get('https://maps.googleapis.com/maps/api/place/autocomplete/json?input='.$request['search_text'].'&key='.'AIzaSyBgcejM6KxDF1mfBl6icxy2WlZ84WR1shs');
+        // $response = Http::get('https://maps.googleapis.com/maps/api/place/autocomplete/json?input='.$request['search_text'].'&key='.'AIzaSyBgcejM6KxDF1mfBl6icxy2WlZ84WR1shs');
+       
+        $response = Http::get('https://maps.googleapis.com/maps/api/place/autocomplete/json?input=' . $request['search_text'] . '&key=' . env('PLACE_API_KEY'));
+
         
         return $response->json();
     }

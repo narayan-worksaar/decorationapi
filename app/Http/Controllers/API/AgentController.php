@@ -143,7 +143,7 @@ class AgentController extends Controller
         $taskCompleted->time = $currentDateTime->toTimeString();
         $taskCompleted->notification_message = $serviceData->service_code . ' task completed by the agent ' . $agnetName->name . ' on ' .  $currentDateTime->toDateString() . ', at ' . $currentDateTime->toTimeString() . ' .';
         
-        
+        /*
         //fcm start
         if ($serviceData) {
          $userDeviceToken = User::find($serviceData['created_by_user_id']);       
@@ -176,11 +176,13 @@ class AgentController extends Controller
          
         }
            //fcm end  
+
+           */
         
         
         $taskCompleted->is_accept = 1;
         $taskCompleted->save();
-
+            /*
            //Send whatsapp group message
             if($request->status == 3){
 
@@ -207,7 +209,7 @@ class AgentController extends Controller
            }
             }
            //end
-
+            */
           
         
         return response()->json([

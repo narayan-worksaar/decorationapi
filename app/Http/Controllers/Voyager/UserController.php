@@ -22,6 +22,7 @@ use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
 use TCG\Voyager\Http\Controllers\VoyagerBaseController;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Database\QueryException;
 
 class UserController extends VoyagerBaseController
 {
@@ -521,6 +522,8 @@ class UserController extends VoyagerBaseController
         $affected = 0;
         
         foreach ($ids as $id) {
+            try {
+                
             $data = call_user_func([$dataType->model_name, 'findOrFail'], $id);
 
             // Check permission
@@ -538,6 +541,15 @@ class UserController extends VoyagerBaseController
 
                 event(new BreadDataDeleted($dataType, $data));
             }
+            } catch (QueryException $e) {
+                // Catch the exception for integrity constraint violation
+                $data = [
+                    'message'    => "Can't delete due to relational data!",
+                    'alert-type' => 'danger',
+                ];
+
+                return redirect()->route("voyager.{$dataType->slug}.index")->with($data);
+            }
         }
 
         $displayName = $affected > 1 ? $dataType->getTranslatedAttribute('display_name_plural') : $dataType->getTranslatedAttribute('display_name_singular');
@@ -554,6 +566,8 @@ class UserController extends VoyagerBaseController
 
         return redirect()->route("voyager.{$dataType->slug}.index")->with($data);
     }
+
+   
 
     public function restore(Request $request, $id)
     {

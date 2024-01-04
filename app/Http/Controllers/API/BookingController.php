@@ -133,19 +133,42 @@ class BookingController extends Controller
 
             if($groupIdData != null){
                  // Your existing parameters
-            $params = [
-                'token' => $groupIdData['instance_data']['token_id'],
-                'to' => $groupIdData->group_id,
-                'body' => "New Booking: " . $addNewService->service_code . "\n" . "Client Name: " . $addNewService->client_name . "\n" . "Mobile No: " .$addNewService->client_mobile_number . "\n" . "Service Date & Time: " .$addNewService->date_time . "\n" . "Service Type: " .$taskTypeData->task_name . "\n" . "Address: " .$addNewService->address,
-                'priority' => '10',
-                'referenceId' => '',
-                'msgId' => '',
-                'mentions' => '',
+    
+            // Convert address to latitude and longitude
+            $geocodingUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
+            $geocodingParams = [
+                'address' => urlencode($addNewService->address),
+                'key' => env('PLACE_API_KEY'),
             ];
+            $geocodingResponse = Http::get($geocodingUrl, $geocodingParams);
+            $geocodingData = $geocodingResponse->json();   
+            
+            if ($geocodingResponse->successful() && isset($geocodingData['results'][0]['geometry']['location'])) {
+                $latitude = $geocodingData['results'][0]['geometry']['location']['lat'];
+                $longitude = $geocodingData['results'][0]['geometry']['location']['lng'];
 
-            $url = 'https://api.ultramsg.com/' . $groupIdData['instance_data']['instance_id'] . '/messages/chat';
+                // Construct Google Maps URL
+                
+                $googleMapsUrl = 'https://www.google.com/maps?q=' . $latitude . ',' . $longitude . '&z=35';
 
-            $response = Http::post($url, $params);
+                // Create a clickable link in the address
+                $addressWithLink = $addNewService->address . (" . $googleMapsUrl . ");
+                
+                $params = [
+                    'token' => $groupIdData['instance_data']['token_id'],
+                    'to' => $groupIdData->group_id,
+                    'body' => "New Booking: " . $addNewService->service_code . "\n" . "Client Name: " . $addNewService->client_name . "\n" . "Mobile No: " .$addNewService->client_mobile_number . "\n" . "Service Date & Time: " .$addNewService->date_time . "\n" . "Service Type: " .$taskTypeData->task_name . "\n" . "Address: " . $addressWithLink,
+                    'priority' => '10',
+                    'referenceId' => '',
+                    'msgId' => '',
+                    'mentions' => '',
+                ];
+
+                $url = 'https://api.ultramsg.com/' . $groupIdData['instance_data']['instance_id'] . '/messages/chat';
+
+                $response = Http::post($url, $params);
+            }
+
             }
 
             //end
@@ -164,75 +187,8 @@ class BookingController extends Controller
         }
        
     }
- 
-    
-    /*
-    public function store_service_booking(Request $request)
-    {
-        
-        $addNewService = new Service();
-        $addNewService->fill($request->except('measure','install'));
-        $addNewService->save();
 
-        $currentYear = date('Y');
-        $idNumber = $addNewService->id;
-        $addNewService->service_code = "SCode-{$currentYear}-{$idNumber}";
-        $addNewService->created_by_user_id = auth()->id();
-        
-        $addNewService->save();
-
-        
-        if ($request->has('measure')) {
-            $measurements = $request->input('measure');
-            // echo "<pre>";
-            // print_r($measurements);
-            // die;
-
-            foreach ($measurements as $measurement) {
-                $measure = new MeasurementDetail();
-                $measure->service_id = $addNewService->id; 
-                $measure->task_type_id = $addNewService->task_type_id; 
-                $measure->created_by_user_id = $addNewService->created_by_user_id; 
-                $measure->no_of_rolls_box_sqft = $measurement['no_of_rolls_box_sqft'];
-                $measure->no_of_surface = $measurement['no_of_surface'];
-                $measure->surface_details = $measurement['surface_details'];
-                $measure->surface_condition_status = $measurement['surface_condition_status'];
-                $measure->material_code = $measurement['material_code'];
-                $measure->type_of_material = $measurement['type_of_material'];
-                $measure->remarks = $measurement['remarks'];
-                $measure->save();
-            }
-        }
-
-        if ($request->has('install')) {
-            $installations = $request->input('install');
-        
-            foreach ($installations as $installation) {
-                $instal = new InstallationDetail();
-                $instal->service_id = $addNewService->id; 
-                $instal->task_type_id = $addNewService->task_type_id; 
-                $instal->created_by_user_id = $addNewService->created_by_user_id; 
-                $instal->no_of_rolls_box_sqft = $installation['no_of_rolls_box_sqft'];
-                $instal->no_of_surface = $installation['no_of_surface'];
-                $instal->surface_details = $installation['surface_details'];
-                $instal->surface_condition_status = $installation['surface_condition_status'];
-                $instal->material_code = $installation['material_code'];
-                $instal->type_of_material = $installation['type_of_material'];
-                $instal->remarks = $installation['remarks'];
-                $instal->save();
-            }
-        }
-
-        return response()->json([
-            "message" => "New service booking is successful!",
-            "status" => 200,
-        ], 200);
-    }
-    */
-
-        
-
-
+   
     public function task_type(){
     
         $tasktypedata = TaskType::select('id','task_name','task_status')->where('task_status','active')->get();
@@ -362,15 +318,34 @@ class BookingController extends Controller
 
         if($groupIdData != null){
              // Your existing parameters
-        $params = [
-            'token' => $groupIdData['instance_data']['token_id'],
-            'to' => $groupIdData->group_id,
-            'body' => "Booking Updated: " . $serviceUpdate->service_code . "\n" . "Client Name: " . $serviceUpdate->client_name . "\n" . "Mobile No: " .$serviceUpdate->client_mobile_number . "\n" . "Service Date & Time: " .$serviceUpdate->date_time . "\n" . "Service Type: " .$taskTypeData->task_name . "\n" . "Address: " .$serviceUpdate->address,
-            'priority' => '10',
-            'referenceId' => '',
-            'msgId' => '',
-            'mentions' => '',
-        ];
+             // Convert address to latitude and longitude
+            $geocodingUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
+            $geocodingParams = [
+                'address' => urlencode($serviceUpdate->address),
+                'key' => env('PLACE_API_KEY'),
+            ];
+            $geocodingResponse = Http::get($geocodingUrl, $geocodingParams);
+            $geocodingData = $geocodingResponse->json(); 
+            if ($geocodingResponse->successful() && isset($geocodingData['results'][0]['geometry']['location'])) {
+                $latitude = $geocodingData['results'][0]['geometry']['location']['lat'];
+                $longitude = $geocodingData['results'][0]['geometry']['location']['lng'];
+
+                // Construct Google Maps URL
+                
+                $googleMapsUrl = 'https://www.google.com/maps?q=' . $latitude . ',' . $longitude . '&z=35';
+
+                // Create a clickable link in the address
+                $addressWithLink = $serviceUpdate->address . (" . $googleMapsUrl . ");     
+
+            $params = [
+                'token' => $groupIdData['instance_data']['token_id'],
+                'to' => $groupIdData->group_id,
+                'body' => "Booking Updated: " . $serviceUpdate->service_code . "\n" . "Client Name: " . $serviceUpdate->client_name . "\n" . "Mobile No: " .$serviceUpdate->client_mobile_number . "\n" . "Service Date & Time: " .$serviceUpdate->date_time . "\n" . "Service Type: " .$taskTypeData->task_name . "\n" . "Address: " . $addressWithLink,
+                'priority' => '10',
+                'referenceId' => '',
+                'msgId' => '',
+                'mentions' => '',
+            ];
 
         $url = 'https://api.ultramsg.com/' . $groupIdData['instance_data']['instance_id'] . '/messages/chat';
         
@@ -379,6 +354,7 @@ class BookingController extends Controller
     
         
         }
+    }
             //end
         
         return response()->json([
@@ -397,7 +373,8 @@ class BookingController extends Controller
         
 
     }
-    
+
+      
     
     public function all_assigned_service(Request $request){
       
@@ -509,6 +486,23 @@ class BookingController extends Controller
             "status" => 200,
             "items" => $single_service
         ],200);
+    }
+
+    public function all_completed_service_of_agent(Request $request){
+      
+        $all_assigned_service = Service::orderBy('updated_at', 'DESC')
+        ->where('assigned_agent_id', auth()->id())
+            ->where('status', 3)
+            ->with('tasktype')
+            ->with('serviceCreator')
+            ->with('serviceAccept')
+            
+            ->paginate(10);
+
+        return response()->json([
+            "status" => 200,
+            "items" => $all_assigned_service
+        ], 200);
     }
 
 }

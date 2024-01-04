@@ -11,7 +11,9 @@ use App\Models\Service;
 use App\Models\ServiceUpdatedByAgent;
 use App\Models\Status;
 use App\Models\TaskAcceptDeclinedNotification;
+use App\Models\TaskType;
 use App\Models\User;
+use App\Models\Whatsappgroup;
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
@@ -29,6 +31,7 @@ use TCG\Voyager\Events\BreadImagesDeleted;
 use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
 use TCG\Voyager\Http\Controllers\VoyagerBaseController;
+use Illuminate\Database\QueryException;
 
 
 class ServiceController extends VoyagerBaseController
@@ -37,14 +40,14 @@ class ServiceController extends VoyagerBaseController
 
     public function index(Request $request)
     {
-     
+
         $allStatus = Status::get();
         $allAgent = User::where('role_id',3)->get();
         $allDealer = User::where('role_id',4)->get();
          //get user id
          $loggedInUserId =  auth()->id();
          $loggedInUserCoordinate = User::where('id',$loggedInUserId)->select('coordinate')->first();
-        
+
         // GET THE SLUG, ex. 'posts', 'pages', etc.
         $slug = $this->getSlug($request);
 
@@ -60,7 +63,7 @@ class ServiceController extends VoyagerBaseController
 
         $searchNames = [];
 
-      
+
         if ($dataType->server_side) {
             $searchNames = $dataType->browseRows->mapWithKeys(function ($row) {
                 return [$row['field'] => $row->getTranslatedAttribute('display_name')];
@@ -77,12 +80,12 @@ class ServiceController extends VoyagerBaseController
             $model = app($dataType->model_name);
             $query = $model::select($dataType->name.'.*');
             //try to export filter wise
-            
-            
+
+
             if ($request->has('action')) {
                 // Check if the action is filter or export
                 $action = $request->input('action');
-        
+
                 if ($action === 'filter') {
                     // Handle filter logic
                     $start_date = $request->input('start_date');
@@ -90,17 +93,17 @@ class ServiceController extends VoyagerBaseController
                     $status_data = $request->input('status_data');
                     $agent_data = $request->input('agent_data');
                     $dealer_data = $request->input('dealer_data');
-                    
+
                     // Apply status filter if provided
                     if ($status_data) {
                         $query->where('status', $status_data);
                     }
-        
+
                      // Apply agent filter if provided
                      if ($agent_data) {
                         $query->where('assigned_agent_id', $agent_data);
                     }
-        
+
                      // Apply Dealer filter if provided
                      if ($dealer_data) {
                         $query->where(function ($query) use ($dealer_data) {
@@ -108,14 +111,14 @@ class ServiceController extends VoyagerBaseController
                                   ->orWhere('employee_of', $dealer_data);
                         });
                     }
-        
+
                      // Apply date filter if both start and end dates are provided
                     if ($start_date && $end_date) {
                         $query->whereBetween('created_at', [$start_date . ' 00:00:00', $end_date . ' 23:59:59']);
                     }
                 } elseif ($action === 'export') {
                     // Handle export logic
-                   
+
                     $status_data = $request->input('status_data');
                     $start_date = $request->input('start_date');
                     $end_date = $request->input('end_date');
@@ -126,7 +129,7 @@ class ServiceController extends VoyagerBaseController
                 }
             }
 
-            
+
             if(isset($loggedInUserCoordinate['coordinate'])){
                 $query->where('coordinate', $loggedInUserCoordinate['coordinate']);
                 }
@@ -248,7 +251,7 @@ class ServiceController extends VoyagerBaseController
         if (view()->exists("voyager::$slug.browse")) {
             $view = "voyager::$slug.browse";
         }
-        
+
         if(isset($loggedInUserCoordinate['coordinate'])){
          $agentData= User::where('role_id',3)->where('coordinate', $loggedInUserCoordinate['coordinate'])->get();
           }else{
@@ -276,36 +279,36 @@ class ServiceController extends VoyagerBaseController
             'allStatus',
             'allAgent',
             'allDealer'
-            
+
         ));
     }
 
 
     public function view_agent_task ($id){
-        
+
         $agentTaskData = ServiceUpdatedByAgent::where('service_id',$id)
         ->with('serviceData')
         ->with('statusData')
         ->with('userData')
         ->get();
         return view('vendor.voyager.services.view_agent_task', compact('agentTaskData'));
-        
+
     }
 
     public function view_agent_task_details ($id){
-        
+
         $agentTaskDetails = ServiceUpdatedByAgent::
         with('serviceData')
         ->with('statusData')
         ->with('userData')
         ->find($id);
-        
+
         return view('vendor.voyager.services.view_agent_task_deatils', compact('agentTaskDetails'));
-        
+
     }
 
     public function show_agent_list($id){
-    
+
         $serviceData = Service::find($id);
         return response()->json([
         "status" => 200,
@@ -315,13 +318,13 @@ class ServiceController extends VoyagerBaseController
     }
     /*
     public function update_agent (Request $request){
-    
+
         $serviceId = $request->input('ser_id');
         $updateAgent = Service::find($serviceId);
-        
+
         $userDeviceToken = User::find($updateAgent['created_by_user_id']);
         dd($userDeviceToken['device_token']);
-        
+
 
         return redirect()->back()->with([
             'message'    => __('Agent assigned successfully!'),
@@ -329,15 +332,15 @@ class ServiceController extends VoyagerBaseController
         ]);
     }
     */
-    
+
     public function update_agent (Request $request){
-    
+
         $serviceId = $request->input('ser_id');
         $updateAgent = Service::find($serviceId);
         $userDeviceToken = User::find($updateAgent['created_by_user_id']);
 
         $agentDeviceToken = User::find($request->agent_id);
-      
+
         $updateAgent->assigned_agent_id = $request->input('agent_id');
         $updateAgent->status = 2;
         $updateAgent->update();
@@ -349,10 +352,10 @@ class ServiceController extends VoyagerBaseController
         $currentDateTime = now();
         $addNewAgent->assigned_date = $currentDateTime->toDateString();
         $addNewAgent->assigned_time = $currentDateTime->toTimeString();
-        $addNewAgent->save(); 
-        
+        $addNewAgent->save();
+
         //fcm start
-        
+
         //Send notification to dealer when agent assigned start
 
          // Define the headers
@@ -360,7 +363,7 @@ class ServiceController extends VoyagerBaseController
             'Content-Type' => 'application/json',
              'Authorization' => 'key=' . env('FIREBASE_KEY'),
         ];
-    
+
         // Define the JSON body
         $body = [
             'registration_ids' => [
@@ -379,7 +382,7 @@ class ServiceController extends VoyagerBaseController
         ];
         //Send notification to dealer when agent assigned end
 
-  
+
 
 
           // Define the JSON body
@@ -393,31 +396,31 @@ class ServiceController extends VoyagerBaseController
                 'android_channel_id' => 'theinstallers',
                 'sound' => true,
             ],
-          
+
         ];
-    
+
         // Send the POST request
         $response = Http::withHeaders($headers)->post('https://fcm.googleapis.com/fcm/send', $body);
-    
+
         // Send the POST request
         $responseAgent = Http::withHeaders($headers)->post('https://fcm.googleapis.com/fcm/send', $bodyAssignedAgent);
 
         //Send notification to agent when task assigned
-            
+
         //fcm end
-        
+
 
         return redirect()->back()->with([
             'message'    => __('Agent assigned successfully!'),
             'alert-type' => 'success',
         ]);
     }
-    
+
 
     public function show(Request $request, $id)
     {
-        
-        
+
+
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -470,7 +473,7 @@ class ServiceController extends VoyagerBaseController
         ->with('statusData')
         ->with('formImageData')
         ->with('siteImageData')
-        
+
         ->get();
 
         $installerNotification= TaskAcceptDeclinedNotification::where('service_id',$dataTypeContent->id)
@@ -481,18 +484,18 @@ class ServiceController extends VoyagerBaseController
         ->with('agent_name')
         ->with('assignedByUser')
         ->get();
-        
+
         // dd($agentServiceUpdatedData);
 
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'isSoftDeleted','agentServiceUpdatedData','installerNotification','assignedAgentHistory'));
     }
 
     public function read_notification (Request $request){
-      
+
         $updateNotification = TaskAcceptDeclinedNotification::find($request->id);
         $updateNotification->is_read = 1;
         $updateNotification->update();
-    
+
         return redirect()->back()->with([
             'message'    => __('Successfully read!'),
             'alert-type' => 'success',
@@ -502,7 +505,7 @@ class ServiceController extends VoyagerBaseController
 
     public function create(Request $request)
     {
-        
+
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -533,7 +536,7 @@ class ServiceController extends VoyagerBaseController
             $view = "voyager::$slug.edit-add";
         }
 
-        
+
 
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable'));
     }
@@ -547,11 +550,11 @@ class ServiceController extends VoyagerBaseController
      */
     public function store(Request $request)
     {
-    //    dd($request->date_time);
+
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
-        
+
         // Check permission
         $this->authorize('add', app($dataType->model_name));
 
@@ -559,17 +562,70 @@ class ServiceController extends VoyagerBaseController
         $val = $this->validateBread($request->all(), $dataType->addRows)->validate();
         $data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());
 
+
+
         // Set the 'service_code' value before saving
         $data->service_code = $this->generateServiceCode();
         $data->date_time = date('d/m/Y H:i', strtotime($request->date_time));
         $data->task_type_id = $request->task_type_id;
         $data->payment_mode_id = $request->payment_mode_id;
         $data->payment_mode_id = $request->payment_mode_id;
-        $data->created_by_user_id = $request->created_by_user_id; 
-        $data->coordinate = $request->coordinate; 
+        $data->created_by_user_id = $request->created_by_user_id;
+        $data->coordinate = $request->coordinate;
         $data->status = $request->status;
         $data->employee_of = $request->employee_of;
         $data->save();
+
+         //Start whatsapp group message
+
+         $groupIdData = Whatsappgroup::where('dealer_id', $request->created_by_user_id)
+         ->with('instance_data')
+         ->first();
+         $taskTypeData=TaskType::find($request->task_type_id);
+
+
+         if($groupIdData != null){
+             // Your existing parameters
+        // Convert address to latitude and longitude
+        $geocodingUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
+        $geocodingParams = [
+            'address' => urlencode($data->address),
+            'key' => env('PLACE_API_KEY'),
+        ];
+        $geocodingResponse = Http::get($geocodingUrl, $geocodingParams);
+        $geocodingData = $geocodingResponse->json();   
+
+        if ($geocodingResponse->successful() && isset($geocodingData['results'][0]['geometry']['location'])) {
+            $latitude = $geocodingData['results'][0]['geometry']['location']['lat'];
+            $longitude = $geocodingData['results'][0]['geometry']['location']['lng'];
+
+            // Construct Google Maps URL
+            
+            $googleMapsUrl = 'https://www.google.com/maps?q=' . $latitude . ',' . $longitude . '&z=35';
+
+            // Create a clickable link in the address
+            $addressWithLink = $data->address . (" . $googleMapsUrl . ");
+
+        $params = [
+            'token' => $groupIdData['instance_data']['token_id'],
+            'to' => $groupIdData->group_id,
+            'body' => "New Booking: " . $data->service_code . "\n" . "Client Name: " . $data->client_name . "\n" . "Mobile No: " .$data->client_mobile_number . "\n" . "Service Date & Time: " .$data->date_time . "\n" . "Service Type: " .$taskTypeData->task_name . "\n" . "Address: " .$addressWithLink,
+            'priority' => '10',
+            'referenceId' => '',
+            'msgId' => '',
+            'mentions' => '',
+        ];
+
+        $url = 'https://api.ultramsg.com/' . $groupIdData['instance_data']['instance_id'] . '/messages/chat';
+
+        $response = Http::post($url, $params);
+        }
+    }
+
+        //end whatsapp group message
+
+
+
 
         event(new BreadDataAdded($dataType, $data));
 
@@ -651,7 +707,8 @@ class ServiceController extends VoyagerBaseController
     // POST BR(E)AD
     public function update(Request $request, $id)
     {
-        
+      
+
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -692,14 +749,63 @@ class ServiceController extends VoyagerBaseController
         $data->task_type_id = $request->task_type_id;
         $data->payment_mode_id = $request->payment_mode_id;
         $data->payment_mode_id = $request->payment_mode_id;
-        $data->created_by_user_id = $request->created_by_user_id; 
-        $data->coordinate = $request->coordinate; 
-        $data->status = $request->status;    
+        $data->created_by_user_id = $request->created_by_user_id;
+        $data->coordinate = $request->coordinate;
+        $data->status = $request->status;
         $data->employee_of = $request->employee_of;
         $data->save();
+          
+        //Start whatsapp group message
+
+        $groupIdData = Whatsappgroup::where('dealer_id', $request->created_by_user_id)
+        ->with('instance_data')
+        ->first();
+        $taskTypeData=TaskType::find($request->task_type_id);
+
+
+        if($groupIdData != null){
+            // Your existing parameters
+             // Convert address to latitude and longitude
+             $geocodingUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
+             $geocodingParams = [
+                 'address' => urlencode($data->address),
+                 'key' => env('PLACE_API_KEY'),
+             ];
+             $geocodingResponse = Http::get($geocodingUrl, $geocodingParams);
+             $geocodingData = $geocodingResponse->json();   
+
+             if ($geocodingResponse->successful() && isset($geocodingData['results'][0]['geometry']['location'])) {
+                $latitude = $geocodingData['results'][0]['geometry']['location']['lat'];
+                $longitude = $geocodingData['results'][0]['geometry']['location']['lng'];
+               
+                // Construct Google Maps URL
+                
+                $googleMapsUrl = 'https://www.google.com/maps?q=' . $latitude . ',' . $longitude . '&z=35';
+
+                // Create a clickable link in the address
+                $addressWithLink = $data->address . (" . $googleMapsUrl . ");       
+
+            $params = [
+                'token' => $groupIdData['instance_data']['token_id'],
+                'to' => $groupIdData->group_id,
+                'body' => "Booking Updated: " . $data->service_code . "\n" . "Client Name: " . $data->client_name . "\n" . "Mobile No: " .$data->client_mobile_number . "\n" . "Service Date & Time: " .$data->date_time . "\n" . "Service Type: " .$taskTypeData->task_name . "\n" . "Address: " . $addressWithLink,
+                'priority' => '10',
+                'referenceId' => '',
+                'msgId' => '',
+                'mentions' => '',
+            ];
+
+       $url = 'https://api.ultramsg.com/' . $groupIdData['instance_data']['instance_id'] . '/messages/chat';
+
+       $response = Http::post($url, $params);
+       }
+    }
+
+       //end whatsapp group message
+       
 
         event(new BreadDataUpdated($dataType, $data));
-       
+
         if (auth()->user()->can('browse', app($dataType->model_name))) {
             $redirect = redirect()->route("voyager.{$dataType->slug}.index");
         } else {
@@ -711,6 +817,72 @@ class ServiceController extends VoyagerBaseController
             'alert-type' => 'success',
         ]);
     }
-    
+
+    public function destroy(Request $request, $id)
+    {
+        $slug = $this->getSlug($request);
+
+        $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
+
+        // Init array of IDs
+        $ids = [];
+        if (empty($id)) {
+            // Bulk delete, get IDs from POST
+            $ids = explode(',', $request->ids);
+        } else {
+            // Single item delete, get ID from URL
+            $ids[] = $id;
+        }
+
+        $affected = 0;
+        
+        foreach ($ids as $id) {
+            try {
+                
+            $data = call_user_func([$dataType->model_name, 'findOrFail'], $id);
+
+            // Check permission
+            $this->authorize('delete', $data);
+
+            $model = app($dataType->model_name);
+            if (!($model && in_array(SoftDeletes::class, class_uses_recursive($model)))) {
+                $this->cleanup($dataType, $data);
+            }
+
+            $res = $data->delete();
+
+            if ($res) {
+                $affected++;
+
+                event(new BreadDataDeleted($dataType, $data));
+            }
+            } catch (QueryException $e) {
+                // Catch the exception for integrity constraint violation
+                $data = [
+                    'message'    => "Can't delete due to relational data!",
+                    'alert-type' => 'danger',
+                ];
+
+                return redirect()->route("voyager.{$dataType->slug}.index")->with($data);
+            }
+        }
+
+        $displayName = $affected > 1 ? $dataType->getTranslatedAttribute('display_name_plural') : $dataType->getTranslatedAttribute('display_name_singular');
+
+        $data = $affected
+            ? [
+                'message'    => __('voyager::generic.successfully_deleted')." {$displayName}",
+                'alert-type' => 'success',
+            ]
+            : [
+                'message'    => __('voyager::generic.error_deleting')." {$displayName}",
+                'alert-type' => 'error',
+            ];
+
+        return redirect()->route("voyager.{$dataType->slug}.index")->with($data);
+    }
+
+
+
 
 }
