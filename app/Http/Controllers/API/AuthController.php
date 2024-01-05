@@ -67,6 +67,7 @@ class AuthController extends Controller
                 
                 $dealerCompanyName = User::find($request->employee_of_dealer_id);
                 $user->company_name = $dealerCompanyName->company_name;
+                $user->coordinate = $dealerCompanyName->coordinate;
             }
            
             if ($request->hasFile('aadhaar_card')) {
@@ -110,6 +111,27 @@ class AuthController extends Controller
                 $image->save(public_path('storage/images/' . $drivingImage), 60);
             
                 $user->driving_license = $drivingImage;
+            }
+
+            if ($request->hasFile('aadhaar_card_back_image')) {
+                $aadharBackImage = time() . "_aadhaar_card_back" . "." . $request->file('aadhaar_card_back_image')->getClientOriginalExtension();
+                $originalImagePath = $request->file('aadhaar_card_back_image')->getRealPath();
+            
+                $image = Image::make($originalImagePath);
+            
+                // Check if the image size is greater than 500 KB
+                if (filesize($originalImagePath) > 500 * 1024) {
+                    // Resize the image
+                    $image->resize(500, 550, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    });
+                }
+            
+                // Save the image with 60% quality
+                $image->save(public_path('storage/images/' . $aadharBackImage), 60);
+            
+                $user->aadhaar_card_back_image = $aadharBackImage;
             }
             
             $user->save();
