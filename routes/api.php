@@ -67,6 +67,8 @@ Route::group([
     Route::get("all-yes-no", [AgentController::class, "all_yes_no"]);
     Route::post("accept-decline-task", [AgentController::class, "accept_decline_task"]);
     Route::post("send-whatsapp-message", [WhatsappController::class, "send_whatsapp_message"]);
+    Route::get("delete-reason", [UserController::class, "delete_reason"]);
+    Route::post("delete-account-request", [UserController::class, "delete_account_request"]);
     
 });
 

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\DeleteAccountRequest;
+use App\Models\DeleteReason;
 use App\Models\Whatsappgroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +24,36 @@ class WhatsappController extends Controller
 
     }
 
+    public function delete_reason(){
+    
+        $delete_reason = DeleteReason::select('id','reason_list','status')->get();
+        return response()->json([
+            "status" => 200,
+            "items" => $delete_reason
+        ],200);
+    }
 
+    public function delete_account_request(Request $request)
+    {
+        try {
+            $deleteRequest = new DeleteAccountRequest();
+            $deleteRequest->user_id = auth()->id();
+            $deleteRequest->reason = $request->reason;
+            $deleteRequest->others = $request->others;
+            $deleteRequest->save();
+            return response()->json([
+                "message" => "Request successfully submitted!",
+                "status" => 200,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                "message" => 'Error: ' . $e->getMessage(),
+                "status" => 500,
+            ], 500);
+        }
+       
+    }
 
     public function send_whatsapp_message(Request $request)
     {

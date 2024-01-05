@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Rules\UniqueMobileNumber;
+use App\Models\DeleteAccountRequest;
+use App\Models\DeleteReason;
 
 class UserController extends Controller
 {
@@ -22,6 +24,37 @@ class UserController extends Controller
     {
         return Auth::guard('api');
 
+    }
+
+    public function delete_reason(){
+    
+        $delete_reason = DeleteReason::select('id','reason_list','status')->get();
+        return response()->json([
+            "status" => 200,
+            "items" => $delete_reason
+        ],200);
+    }
+
+    public function delete_account_request(Request $request)
+    {
+        try {
+            $deleteRequest = new DeleteAccountRequest();
+            $deleteRequest->user_id = auth()->id();
+            $deleteRequest->reason = $request->reason;
+            $deleteRequest->others = $request->others;
+            $deleteRequest->save();
+            return response()->json([
+                "message" => "Request successfully submitted!",
+                "status" => 200,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                "message" => 'Error: ' . $e->getMessage(),
+                "status" => 500,
+            ], 500);
+        }
+       
     }
 
     public function update_dealer_details(Request $request)
