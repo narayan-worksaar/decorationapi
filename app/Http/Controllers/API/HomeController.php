@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
+    
     public function place_api_autocomplete(Request $request)
     {
         $validator = Validator::make($request->all(), [

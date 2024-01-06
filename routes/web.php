@@ -5,6 +5,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\Voyager\ServiceController;
 use App\Http\Controllers\Voyager\UserController;
 use App\Mail\ActivationAccountMail;
+use App\Mail\DeleteAccountRequestMail;
 use App\Mail\RegisterUserMail;
 use Illuminate\Support\Facades\Route;
 
@@ -48,7 +49,7 @@ Route::get('/rollbackstepone', function () {
 
 
 // Route::get('/registerMail', function () {
-//     return new ActivationAccountMail();
+//     return new DeleteAccountRequestMail();
 // });
 
 Route::group(['prefix' => 'admin'], function () {

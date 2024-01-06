@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Mail\DeleteAccountRequestMail;
 use App\Models\City;
 use App\Models\State;
 use App\Models\User;
@@ -13,6 +14,7 @@ use Illuminate\Validation\Rule;
 use App\Rules\UniqueMobileNumber;
 use App\Models\DeleteAccountRequest;
 use App\Models\DeleteReason;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -37,12 +39,73 @@ class UserController extends Controller
 
     public function delete_account_request(Request $request)
     {
+      
+        // $loggedInUser = User::find(auth()->id());
+        // $coordinatates = User::where(function ($query) use ($loggedInUser) {
+        //     $query->where('coordinate', $loggedInUser->coordinate)
+        //         ->where('role_id', 2);
+        // })
+        // ->orWhere(function ($query) {
+        //     $query->whereNull('coordinate')
+        //         ->where('role_id', 1);
+        // })
+        // ->select('id', 'role_id', 'name', 'email')
+        // ->get();
+
+        //   $mailData = [
+        //     'user_id' => $loggedInUser->id,    
+        //     'name' => $loggedInUser->name,
+        //     'email' => $loggedInUser->email,
+        //     'mobile' => $loggedInUser->mobile_number,
+        //     ];
+        //     Mail::to($coordinatates['email'])->send(new DeleteAccountRequestMail($mailData));
+        //     return response()->json(['success' => 'Mail sent!.'], 200);
+
+        //   return response()->json([
+        //         "status" => 200,
+        //         "items" => $coordinatates,
+        //     ], 200);
+
+        $loggedInUser = User::find(auth()->id());
+
+        $coordinatates = User::where(function ($query) use ($loggedInUser) {
+            $query->where('coordinate', $loggedInUser->coordinate)
+                ->where('role_id', 2);
+        })
+        ->orWhere(function ($query) {
+            $query->whereNull('coordinate')
+                ->where('role_id', 1);
+        })
+        ->select('id', 'role_id', 'name', 'email')
+        ->get();
+
+        $mailData = [
+            'user_id' => $loggedInUser->id,    
+            'name' => $loggedInUser->name,
+            'email' => $loggedInUser->email,
+            'mobile' => $loggedInUser->mobile_number,
+        ];
+
+        foreach ($coordinatates as $user) {
+            Mail::to($user->email)->send(new DeleteAccountRequestMail($mailData));
+        }
+
+      
         try {
+          
+
             $deleteRequest = new DeleteAccountRequest();
             $deleteRequest->user_id = auth()->id();
             $deleteRequest->reason = $request->reason;
             $deleteRequest->others = $request->others;
+
+            $loggedInUser = User::find(auth()->id());
+            $loggedInUser->status = 'inactive';
+            $loggedInUser->save();
+
             $deleteRequest->save();
+
+
             return response()->json([
                 "message" => "Request successfully submitted!",
                 "status" => 200,
