@@ -303,7 +303,9 @@ class BookingController extends Controller
         $serviceUpdate->payment_mode_id = $request->payment_mode_id;
         $serviceUpdate->remarks = $request->remarks;
         $serviceUpdate->notes = $request->notes; 
-        $serviceUpdate->coordinate = $request->coordinate;    
+        $serviceUpdate->coordinate = $request->coordinate;   
+        $serviceUpdate->landmark = $request->landmark;
+        $serviceUpdate->quantity = $request->quantity;    
         $serviceUpdate->save();
 
         

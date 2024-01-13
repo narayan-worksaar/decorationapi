@@ -40,32 +40,7 @@ class UserController extends Controller
     public function delete_account_request(Request $request)
     {
       
-        // $loggedInUser = User::find(auth()->id());
-        // $coordinatates = User::where(function ($query) use ($loggedInUser) {
-        //     $query->where('coordinate', $loggedInUser->coordinate)
-        //         ->where('role_id', 2);
-        // })
-        // ->orWhere(function ($query) {
-        //     $query->whereNull('coordinate')
-        //         ->where('role_id', 1);
-        // })
-        // ->select('id', 'role_id', 'name', 'email')
-        // ->get();
-
-        //   $mailData = [
-        //     'user_id' => $loggedInUser->id,    
-        //     'name' => $loggedInUser->name,
-        //     'email' => $loggedInUser->email,
-        //     'mobile' => $loggedInUser->mobile_number,
-        //     ];
-        //     Mail::to($coordinatates['email'])->send(new DeleteAccountRequestMail($mailData));
-        //     return response()->json(['success' => 'Mail sent!.'], 200);
-
-        //   return response()->json([
-        //         "status" => 200,
-        //         "items" => $coordinatates,
-        //     ], 200);
-
+        
         $loggedInUser = User::find(auth()->id());
 
         $coordinatates = User::where(function ($query) use ($loggedInUser) {

@@ -7,6 +7,7 @@ use App\Http\Controllers\Voyager\UserController;
 use App\Mail\ActivationAccountMail;
 use App\Mail\DeleteAccountRequestMail;
 use App\Mail\RegisterUserMail;
+use App\Mail\TestMail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,9 +49,9 @@ Route::get('/rollbackstepone', function () {
 });
 
 
-// Route::get('/registerMail', function () {
-//     return new DeleteAccountRequestMail();
-// });
+Route::get('/registerMail', function () {
+    return new TestMail();
+});
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();

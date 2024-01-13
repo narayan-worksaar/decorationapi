@@ -58,7 +58,6 @@
 <body>
   <div class="container">
     {{-- public/storage/images/logonew.png --}}
-    {{-- <img src="{{asset('assets/images/image.png')}}"> --}}
     <img src="{{asset('public/storage/images/logonew.png')}}" alt="Logo" class="header-image">
     <h2>Delete Account Request</h2>
     <p>Mr. Narayan Paswan has sent a request to delete the account.</p>
@@ -70,9 +69,9 @@
         <th>Mobile No</th>
       </tr>
       <tr>
-        <td>{{ $mailData['user_id'] }}</td>
-        <td>{{ $mailData['email'] }}</td>
-        <td>{{ $mailData['mobile'] }}</td>
+        <td>8</td>
+        <td>narayan@gmail.com</td>
+        <td>9832339909</td>
       </tr>
     </table>
     
