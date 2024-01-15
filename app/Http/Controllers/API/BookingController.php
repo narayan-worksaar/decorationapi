@@ -101,6 +101,8 @@ class BookingController extends Controller
             
             $addNewService = new Service();
             $addNewService->fill($request->all()); 
+            $addNewService->landmark = $request->landmark;
+            $addNewService->quantity = $request->quantity;
             $addNewService->save();
     
             $currentYear = date('Y');

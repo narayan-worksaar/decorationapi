@@ -80,4 +80,4 @@ Route::get("get-service-booking-data", [HomeController::class, "get_service_book
 Route::get("gender", [HomeController::class, "gender"]);
 
 Route::get("place-api-autocomplete", [HomeController::class, "place_api_autocomplete"]);
-
+Route::get("service-centre", [HomeController::class, "service_centre"]);

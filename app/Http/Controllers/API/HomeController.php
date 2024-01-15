@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Coordinate;
 use App\Models\Gender;
 use App\Models\OnBoard;
 use Illuminate\Http\Request;
@@ -156,7 +157,14 @@ class HomeController extends Controller
         ],200);
     }
 
-
+    public function service_centre(){
+    
+        $service = Coordinate::get();
+        return response()->json([
+            "status" => 200,
+            "items" => $service
+        ],200);
+    }
     
     
 }

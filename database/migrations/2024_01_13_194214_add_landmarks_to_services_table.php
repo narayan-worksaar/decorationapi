@@ -15,7 +15,7 @@ class AddLandmarksToServicesTable extends Migration
     {
         Schema::table('services', function (Blueprint $table) {
             $table->string('landmark')->nullable();
-            $table->integer('quantity')->nullable();
+            $table->string('quantity')->nullable();
         });
     }
 
