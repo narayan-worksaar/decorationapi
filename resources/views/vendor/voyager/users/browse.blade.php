@@ -417,7 +417,8 @@
 
 <script>
     $(document).ready(function () {
-        $('.toggleswitch').change(function() {
+        // $('.toggleswitch').change(function() {
+            $('.table-responsive').on('change', '.toggleswitch', function() {  
             var id = $(this).data('id');
             var type = $(this).data('type');
             var name = $(this).data('name');

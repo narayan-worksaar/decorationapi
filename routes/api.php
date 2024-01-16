@@ -69,6 +69,7 @@ Route::group([
     Route::post("send-whatsapp-message", [WhatsappController::class, "send_whatsapp_message"]);
     Route::get("delete-reason", [UserController::class, "delete_reason"]);
     Route::post("delete-account-request", [UserController::class, "delete_account_request"]);
+    Route::get("dealer-employee-list", [UserController::class, "dealer_employee_list"]);
     
 });
 

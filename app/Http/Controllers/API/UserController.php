@@ -213,4 +213,18 @@ class UserController extends Controller
             "items" => $all_cities
         ],200);
     }
+
+    public function dealer_employee_list(Request $request){
+      
+        $dealer_employee_list = User::orderBy('id', 'DESC')
+        ->where('role_id',5)
+        ->where('employee_of_dealer_id', auth()->id())
+        ->select('id','image','name','email','mobile_number','address','avatar')
+            ->paginate(10);
+
+        return response()->json([
+            "status" => 200,
+            "items" => $dealer_employee_list
+        ], 200);
+    }
 }
