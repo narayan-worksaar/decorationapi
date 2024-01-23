@@ -509,4 +509,75 @@ class BookingController extends Controller
         ], 200);
     }
 
+    public function duplicate_service_booking(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            "booking_id" => "required",
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+    
+       
+      
+        try {
+        $serviceDuplicate = Service::find($request->booking_id);
+       
+
+        $existingRowsCount = Service::count();
+        $idNumber = $existingRowsCount + 1;
+        $currentYear = date('Y');
+
+        $loggedInUser = User::find(auth()->id());
+        
+        $addNewService = new Service();
+        $addNewService->service_code = "SCode-{$currentYear}-{$idNumber}";
+        $addNewService->client_name = $serviceDuplicate->client_name;
+        $addNewService->client_email_address = $serviceDuplicate->client_email_address;
+        $addNewService->client_mobile_number = $serviceDuplicate->client_mobile_number;
+        $addNewService->date_time = $serviceDuplicate->date_time;
+        $addNewService->task_type_id = $serviceDuplicate->task_type_id;
+        $addNewService->remarks = $serviceDuplicate->remarks;
+        $addNewService->notes = $serviceDuplicate->notes; 
+        $addNewService->payment_mode_id = $serviceDuplicate->payment_mode_id;
+        $addNewService->address = $serviceDuplicate->address;
+        $addNewService->type_of_measurement = $serviceDuplicate->type_of_measurement;
+        $addNewService->type_of_material = $serviceDuplicate->type_of_material;
+        $addNewService->status = $serviceDuplicate->status;
+        $addNewService->coordinate = $serviceDuplicate->coordinate;
+        $addNewService->landmark = $serviceDuplicate->landmark;
+        $addNewService->quantity = $serviceDuplicate->quantity;
+        $addNewService->save();
+        
+        $addNewService->created_by_user_id = auth()->id();
+        if($loggedInUser->employee_of_dealer_id != null){
+            $addNewService->employee_of = $loggedInUser->employee_of_dealer_id;
+            $addNewService->dealer_id = $loggedInUser->employee_of_dealer_id;
+            $addNewService->save(); 
+        }
+
+        if($loggedInUser->employee_of_dealer_id != null){
+            $addNewService->dealer_id = $loggedInUser->employee_of_dealer_id;
+            $addNewService->save(); 
+        }else{
+            $addNewService->dealer_id = auth()->id();
+            $addNewService->save(); 
+        }
+
+        return response()->json([
+            "message" => "Duplicate successfully",
+            "status" => 200,
+            "item" =>$addNewService
+        ],200);
+        } catch (\Exception $e) {
+            // Return error response in JSON format
+            return response()->json([
+                "message" => 'Error: ' . $e->getMessage(),
+                "status" => 500,
+            ], 500);
+        }
+
+    }
+
 }
