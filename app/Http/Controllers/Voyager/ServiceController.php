@@ -95,6 +95,7 @@ class ServiceController extends VoyagerBaseController
                     $dealer_data = $request->input('dealer_data');
 
                     // Apply status filter if provided
+                    
                     if ($status_data) {
                         $query->where('status', $status_data);
                     }

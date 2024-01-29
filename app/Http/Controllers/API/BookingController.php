@@ -224,21 +224,53 @@ class BookingController extends Controller
        
     }
 
-    public function all_pending_booking(Request $request){
-      
-        $all_on_pending_booking = Service::orderBy('id', 'DESC')
-        ->where(function ($query) {
-            $query->where('created_by_user_id', auth()->id())
-              ->orWhere('employee_of', auth()->id());
+    public function all_pending_booking(Request $request) {
+        $searchQuery = $request->input('search');
+        $fromDate = $request->input('fromDate');
+        $toDate = $request->input('toDate');
+
+            // Convert date format using Carbon
+        if ($fromDate) {
+            $fromDate = Carbon::createFromFormat('d-m-Y', $fromDate)->format('Y-m-d');
+        }
+
+        if ($toDate) {
+            $toDate = Carbon::createFromFormat('d-m-Y', $toDate)->format('Y-m-d');
+        }
+       
+        $all_completed_booking = Service::orderBy('created_at', 'DESC')
+            ->where(function ($query) {
+                $query->where('created_by_user_id', auth()->id())
+                    ->orWhere('employee_of', auth()->id());
             })
             ->where('status', 1)
+            ->when($searchQuery, function ($query, $searchQuery) {
+                $query->where('service_code', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('client_name', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('client_email_address', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('client_mobile_number', 'like', '%' . $searchQuery . '%');
+            })
+        
             ->with('tasktype')
             ->with('serviceCreator')
             ->paginate(10);
 
+            if ($fromDate && $toDate) {
+                $all_completed_booking=Service::whereBetween('created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59'])
+                ->where(function ($query) {
+                    $query->where('created_by_user_id', auth()->id())
+                        ->orWhere('employee_of', auth()->id());
+                })
+                ->where('status', 1)
+                ->with('tasktype')
+                ->with('serviceCreator')
+                ->paginate(10);
+            }
+            $all_completed_booking = $all_completed_booking;
+        
         return response()->json([
             "status" => 200,
-            "items" => $all_on_pending_booking
+            "items" => $all_completed_booking
         ], 200);
     }
 
@@ -449,7 +481,7 @@ class BookingController extends Controller
             "items" => $single_service
         ],200);
     }
-
+    /*
     public function all_completed_booking(){
       
         $all_completed_booking = Service::orderBy('id', 'DESC')
@@ -467,6 +499,61 @@ class BookingController extends Controller
             "items" => $all_completed_booking
         ], 200);
     }
+    */
+
+   
+    
+
+    public function all_completed_booking(Request $request) {
+        $searchQuery = $request->input('search');
+        $fromDate = $request->input('fromDate');
+        $toDate = $request->input('toDate');
+
+            // Convert date format using Carbon
+        if ($fromDate) {
+            $fromDate = Carbon::createFromFormat('d-m-Y', $fromDate)->format('Y-m-d');
+        }
+
+        if ($toDate) {
+            $toDate = Carbon::createFromFormat('d-m-Y', $toDate)->format('Y-m-d');
+        }
+       
+        $all_completed_booking = Service::orderBy('created_at', 'DESC')
+            ->where(function ($query) {
+                $query->where('created_by_user_id', auth()->id())
+                    ->orWhere('employee_of', auth()->id());
+            })
+            ->where('status', 3)
+            ->when($searchQuery, function ($query, $searchQuery) {
+                $query->where('service_code', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('client_name', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('client_email_address', 'like', '%' . $searchQuery . '%')
+                    ->orWhere('client_mobile_number', 'like', '%' . $searchQuery . '%');
+            })
+        
+            ->with('tasktype')
+            ->with('serviceCreator')
+            ->paginate(10);
+
+            if ($fromDate && $toDate) {
+                $all_completed_booking=Service::whereBetween('created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59'])
+                ->where('status', 3)
+                ->with('tasktype')
+                ->with('serviceCreator')
+                ->paginate(10);
+            }
+            $all_completed_booking = $all_completed_booking;
+        
+        return response()->json([
+            "status" => 200,
+            "items" => $all_completed_booking
+        ], 200);
+    }
+   
+     
+    
+    
+    
 
     public function get_booking_completed_details(Request $request){
         
