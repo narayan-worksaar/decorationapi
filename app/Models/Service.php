@@ -96,6 +96,11 @@ class Service extends Model
         return $this->hasOne(Status::class,'id', 'status');
     }
 
+    public function serviceCentreData() 
+    {
+        return $this->hasOne(Coordinate::class,'id', 'coordinate');
+    }
+
     public function InstallerData() 
     {
         return $this->hasOne(User::class,'id', 'assigned_agent_id');

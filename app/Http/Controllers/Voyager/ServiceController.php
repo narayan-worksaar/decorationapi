@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Voyager;
 
 use App\Exports\ServiceExport;
 use App\Models\AgentAssigned;
+use App\Models\Coordinate;
 use App\Models\Service;
 use App\Models\ServiceUpdatedByAgent;
 use App\Models\Status;
@@ -14,6 +15,7 @@ use App\Models\TaskAcceptDeclinedNotification;
 use App\Models\TaskType;
 use App\Models\User;
 use App\Models\Whatsappgroup;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
@@ -42,6 +44,7 @@ class ServiceController extends VoyagerBaseController
     {
 
         $allStatus = Status::get();
+        $allServiceCenter = Coordinate::get();
         $allAgent = User::where('role_id',3)->get();
         $allDealer = User::where('role_id',4)->get();
          //get user id
@@ -91,6 +94,7 @@ class ServiceController extends VoyagerBaseController
                     $start_date = $request->input('start_date');
                     $end_date = $request->input('end_date');
                     $status_data = $request->input('status_data');
+                    $service_center = $request->input('service_center');
                     $agent_data = $request->input('agent_data');
                     $dealer_data = $request->input('dealer_data');
 
@@ -98,6 +102,10 @@ class ServiceController extends VoyagerBaseController
                     
                     if ($status_data) {
                         $query->where('status', $status_data);
+                    }
+
+                    if ($service_center) {
+                        $query->where('coordinate', $service_center);
                     }
 
                      // Apply agent filter if provided
@@ -115,18 +123,31 @@ class ServiceController extends VoyagerBaseController
 
                      // Apply date filter if both start and end dates are provided
                     if ($start_date && $end_date) {
-                        $query->whereBetween('created_at', [$start_date . ' 00:00:00', $end_date . ' 23:59:59']);
+                              // Convert date format using Carbon
+        
+                     $start_date = Carbon::createFromFormat('Y-m-d', $start_date)->format('d/m/Y');
+                     $end_date = Carbon::createFromFormat('Y-m-d', $end_date)->format('d/m/Y');
+        
+                        // dd($start_date ." start and end date ". $end_date);
+                        // $query->whereBetween('created_at', [$start_date . ' 00:00:00', $end_date . ' 23:59:59']);
+                        $query->whereBetween('date_time', [$start_date . ' 00:00:00', $end_date . ' 23:59:59']);
                     }
                 } elseif ($action === 'export') {
                     // Handle export logic
 
                     $status_data = $request->input('status_data');
+                    $service_center = $request->input('service_center');
                     $start_date = $request->input('start_date');
                     $end_date = $request->input('end_date');
+                    if ($start_date && $end_date) {
+                    $start_date = Carbon::createFromFormat('Y-m-d', $start_date)->format('d/m/Y');
+                    $end_date = Carbon::createFromFormat('Y-m-d', $end_date)->format('d/m/Y');
+                    }
                     $agent_data = $request->input('agent_data');
                     $dealer_data = $request->input('dealer_data');
                     // Pass filter criteria to the export class
-                    return Excel::download(new ServiceExport($status_data, $start_date, $end_date, $agent_data, $dealer_data), 'service.xlsx');
+                    return Excel::download(new ServiceExport($status_data, $service_center, $start_date, $end_date, $agent_data, $dealer_data), 'service.xlsx');
+                    
                 }
             }
 
@@ -279,7 +300,8 @@ class ServiceController extends VoyagerBaseController
             'agentData',
             'allStatus',
             'allAgent',
-            'allDealer'
+            'allDealer',
+            'allServiceCenter'
 
         ));
     }

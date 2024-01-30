@@ -92,6 +92,22 @@
                                 </select>
                             
                             </div>
+                            @if(auth()->check() && auth()->user()->role_id == 1)
+
+                            <div class="form-group  col-md-3 ">
+                                <label class="control-label" for="name">Service Centre</label>
+                                <select class="form-control" name="service_center" id="serviceCenter">    
+                                    <option value="" selected="selected">None</option>  
+                                    @foreach ($allServiceCenter as $service_center)
+                                   <option value="{{ $service_center->id }}" {{ request('service_center') == $service_center->id ? 'selected' : '' }}>
+                                    {{ $service_center->place }}
+                                </option>
+                                    @endforeach
+                                </select>
+                            
+                            </div>
+                            
+                            @endif
 
                             <div class="form-group  col-md-3 ">
                                 <label class="control-label" for="name">Agent</label>
@@ -120,12 +136,12 @@
                             </div>
                             
                              <div class="form-group col-md-3">
-                                <label class="control-label" for="start_date">Start Date</label>
+                                <label class="control-label" for="start_date">Service Start Date</label>
                                 <input type="date" name="start_date" id="startDate" class="form-control">
                             </div>
                             
                             <div class="form-group col-md-3">
-                                <label class="control-label" for="end_date">End Date</label>
+                                <label class="control-label" for="end_date">Service End Date</label>
                                 <input type="date" name="end_date" id="endDate" class="form-control">
                             </div>
                             
@@ -552,6 +568,7 @@
 
         // Clear the selected status value
         document.getElementById('statusData').value = '';
+        document.getElementById('serviceCenter').value = '';
         document.getElementById('agentData').value = '';
         document.getElementById('dealerData').value = '';
         document.getElementById('startDate').value = '';
@@ -566,6 +583,9 @@
         // Update the selected status value based on the query parameter
         const statusData = new URLSearchParams(window.location.search).get('status_data');
         document.getElementById('statusData').value = statusData || '';
+        
+        const serviceCenter = new URLSearchParams(window.location.search).get('service_center');
+        document.getElementById('serviceCenter').value = serviceCenter || '';
 
         const agentData = new URLSearchParams(window.location.search).get('agent_data');
         document.getElementById('agentData').value = agentData || '';
@@ -589,6 +609,12 @@
 
     $(document).ready(function () {
       
+        $('#serviceCenter').select2({
+            placeholder: 'Search by service centre',
+            allowClear: true, 
+            minimumResultsForSearch: 2 
+        });
+
         $('#statusData').select2({
             placeholder: 'Search for a status',
             allowClear: true, 
