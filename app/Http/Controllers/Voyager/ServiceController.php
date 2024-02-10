@@ -355,8 +355,9 @@ class ServiceController extends VoyagerBaseController
         ]);
     }
     */
+    /*
 
-    public function update_agent (Request $request){
+    public function update_agent (Request $request){    
 
         $serviceId = $request->input('ser_id');
         $updateAgent = Service::find($serviceId);
@@ -438,6 +439,84 @@ class ServiceController extends VoyagerBaseController
             'alert-type' => 'success',
         ]);
     }
+    */
+
+    public function update_agent(Request $request)
+{
+    $serviceId = $request->input('ser_id');
+    $updateAgent = Service::find($serviceId);
+    $userDeviceToken = User::find($updateAgent['created_by_user_id']);
+    $agentDeviceToken = User::find($request->agent_id);
+
+    $updateAgent->assigned_agent_id = $request->input('agent_id');
+    $updateAgent->status = 2;
+    $updateAgent->update();
+
+    $addNewAgent = new AgentAssigned();
+    $addNewAgent->service_id = $serviceId;
+    $addNewAgent->assigned_by = auth()->id();
+    $addNewAgent->agent = $request->agent_id;
+    $currentDateTime = now();
+    $addNewAgent->assigned_date = $currentDateTime->toDateString();
+    $addNewAgent->assigned_time = $currentDateTime->toTimeString();
+    $addNewAgent->save();
+
+    // Define the headers
+    $headers = [
+        'Content-Type' => 'application/json',
+        'Authorization' => 'key=' . env('FIREBASE_KEY'),
+    ];
+
+    // Define the JSON body for user notification
+    $userNotificationBody = [
+        'notification' => [
+            'body' => 'On-going booking',
+            'title' => 'Installer Assigned',
+            'android_channel_id' => 'theinstallers',
+            'sound' => true,
+        ],
+        'data' => [
+            '_id' => $updateAgent['id'],
+            '_serviceCode' => $updateAgent['service_code'],
+        ],
+    ];
+
+    // Check if userDeviceToken exists and has device_token
+    if ($userDeviceToken && isset($userDeviceToken['device_token'])) {
+        $userNotificationBody['registration_ids'] = [$userDeviceToken['device_token']];
+    } 
+    // Define the JSON body for agent notification
+    $agentNotificationBody = [
+        'notification' => [
+            'body' => 'Task assigned of ' . $updateAgent['client_name'],
+            'title' => 'New task assigned',
+            'android_channel_id' => 'theinstallers',
+            'sound' => true,
+        ],
+    ];
+
+    // Check if agentDeviceToken exists and has device_token
+    if ($agentDeviceToken && isset($agentDeviceToken['device_token'])) {
+        $agentNotificationBody['registration_ids'] = [$agentDeviceToken['device_token']];
+    } 
+
+    // Send notifications only if the registration ids are set
+    if (isset($userNotificationBody['registration_ids'])) {
+        $response = Http::withHeaders($headers)->post('https://fcm.googleapis.com/fcm/send', $userNotificationBody);
+    }
+
+    if (isset($agentNotificationBody['registration_ids'])) {
+        $responseAgent = Http::withHeaders($headers)->post('https://fcm.googleapis.com/fcm/send', $agentNotificationBody);
+    }
+
+    return redirect()->back()->with([
+        'message'    => __('Agent assigned successfully!'),
+        'alert-type' => 'success',
+    ]);
+}
+
+
+
 
 
     public function show(Request $request, $id)

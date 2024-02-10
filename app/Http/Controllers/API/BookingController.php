@@ -101,8 +101,14 @@ class BookingController extends Controller
             
             $addNewService = new Service();
             $addNewService->fill($request->all()); 
-            $addNewService->landmark = $request->landmark;
-            $addNewService->quantity = $request->quantity;
+            // $addNewService->address = $request->address;
+            // $addNewService->landmark = $request->landmark;
+            // $addNewService->client_name = $request->client_name;
+            // $addNewService->client_email_address = $request->client_email_address;
+            // $addNewService->client_mobile_number = $request->client_mobile_number;
+            // $addNewService->date_time = $request->date_time;
+            // $addNewService->quantity = $request->quantity;
+
             $addNewService->save();
     
             $currentYear = date('Y');
@@ -230,13 +236,13 @@ class BookingController extends Controller
         $toDate = $request->input('toDate');
 
             // Convert date format using Carbon
-        if ($fromDate) {
-            $fromDate = Carbon::createFromFormat('d-m-Y', $fromDate)->format('Y-m-d');
-        }
+        // if ($fromDate) {
+        //     $fromDate = Carbon::createFromFormat('d-m-Y', $fromDate)->format('Y-m-d');
+        // }
 
-        if ($toDate) {
-            $toDate = Carbon::createFromFormat('d-m-Y', $toDate)->format('Y-m-d');
-        }
+        // if ($toDate) {
+        //     $toDate = Carbon::createFromFormat('d-m-Y', $toDate)->format('Y-m-d');
+        // }
        
         $all_completed_booking = Service::orderBy('created_at', 'DESC')
             ->where(function ($query) {
@@ -256,7 +262,7 @@ class BookingController extends Controller
             ->paginate(10);
 
             if ($fromDate && $toDate) {
-                $all_completed_booking=Service::whereBetween('created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59'])
+                $all_completed_booking=Service::whereBetween('date_time', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59'])
                 ->where(function ($query) {
                     $query->where('created_by_user_id', auth()->id())
                         ->orWhere('employee_of', auth()->id());
@@ -509,15 +515,7 @@ class BookingController extends Controller
         $fromDate = $request->input('fromDate');
         $toDate = $request->input('toDate');
 
-            // Convert date format using Carbon
-        if ($fromDate) {
-            $fromDate = Carbon::createFromFormat('d-m-Y', $fromDate)->format('Y-m-d');
-        }
-
-        if ($toDate) {
-            $toDate = Carbon::createFromFormat('d-m-Y', $toDate)->format('Y-m-d');
-        }
-       
+                 
         $all_completed_booking = Service::orderBy('created_at', 'DESC')
             ->where(function ($query) {
                 $query->where('created_by_user_id', auth()->id())
@@ -536,7 +534,7 @@ class BookingController extends Controller
             ->paginate(10);
 
             if ($fromDate && $toDate) {
-                $all_completed_booking=Service::whereBetween('created_at', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59'])
+                $all_completed_booking=Service::whereBetween('date_time', [$fromDate . ' 00:00:00', $toDate . ' 23:59:59'])
                 ->where('status', 3)
                 ->with('tasktype')
                 ->with('serviceCreator')

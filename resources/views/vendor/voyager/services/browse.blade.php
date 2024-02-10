@@ -90,8 +90,8 @@
                                 </option>
                                     @endforeach
                                 </select>
-                            
                             </div>
+                           
                             @if(auth()->check() && auth()->user()->role_id == 1)
 
                             <div class="form-group  col-md-3 ">
@@ -187,6 +187,7 @@
                                         <th>Agent Task</th>
 
                                         <th class="actions text-right dt-not-orderable">{{ __('voyager::generic.actions') }}</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -338,12 +339,11 @@
                                             </td>
                                         @endforeach
                                         <td>
-                                        
-                                           
-                                             
+                                          
                                             <button type="button" value="{{ $data->id }}" class="btn btn-sm btn-primary pull-right view assignAgent">
                                                 <i class="voyager-edit"></i> <span class="hidden-xs hidden-sm ">Assign</span>
                                             </button>
+                                           
                                            
                                         </td>
                                         

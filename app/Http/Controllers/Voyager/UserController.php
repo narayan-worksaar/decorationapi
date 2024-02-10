@@ -354,37 +354,37 @@ class UserController extends VoyagerBaseController
     // POST BR(E)AD
     public function update(Request $request, $id)
     {
-        $slug = $this->getSlug($request);
+    $slug = $this->getSlug($request);
+    $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
 
-        $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
+    // Compatibility with Model binding.
+    $id = $id instanceof \Illuminate\Database\Eloquent\Model ? $id->{$id->getKeyName()} : $id;
 
-        // Compatibility with Model binding.
-        $id = $id instanceof \Illuminate\Database\Eloquent\Model ? $id->{$id->getKeyName()} : $id;
+    $model = app($dataType->model_name);
+    $query = $model->query();
+    if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
+        $query = $query->{$dataType->scope}();
+    }
+    if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
+        $query = $query->withTrashed();
+    }
 
-        $model = app($dataType->model_name);
-        $query = $model->query();
-        if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
-            $query = $query->{$dataType->scope}();
-        }
-        if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
-            $query = $query->withTrashed();
-        }
+    $data = $query->findOrFail($id);
 
-        $data = $query->findOrFail($id);
+    // Check permission
+    $this->authorize('edit', $data);
 
-        // Check permission
-        $this->authorize('edit', $data);
+    // Validate fields with ajax
+    $val = $this->validateBread($request->all(), $dataType->editRows, $dataType->name, $id)->validate();
 
-        // Validate fields with ajax
-        $val = $this->validateBread($request->all(), $dataType->editRows, $dataType->name, $id)->validate();
+    // Get fields with images to remove before updating and make a copy of $data
+    $to_remove = $dataType->editRows->where('type', 'image')
+        ->filter(function ($item, $key) use ($request) {
+            return $request->hasFile($item->field);
+        });
+    $original_data = clone($data);
 
-        // Get fields with images to remove before updating and make a copy of $data
-        $to_remove = $dataType->editRows->where('type', 'image')
-            ->filter(function ($item, $key) use ($request) {
-                return $request->hasFile($item->field);
-            });
-        $original_data = clone($data);
-
+    try {
         $this->insertUpdateData($request, $slug, $dataType->editRows, $data);
 
         // Delete Images
@@ -402,7 +402,22 @@ class UserController extends VoyagerBaseController
             'message'    => __('voyager::generic.successfully_updated')." {$dataType->getTranslatedAttribute('display_name_singular')}",
             'alert-type' => 'success',
         ]);
+    } catch (QueryException $exception) {
+        // Check if the exception is related to a duplicate entry violation
+        if ($exception->errorInfo[1] == 1062) {
+            // Display a custom toaster message for duplicate entry
+            return redirect()->back()->with([
+                'message'    => "Duplicate entry '{$request->input('email')}'",
+                'alert-type' => 'error',
+            ]);
+        }
+
+        // Re-throw the exception if it's not related to a duplicate entry violation
+        throw $exception;
     }
+    }
+
+    
 
     //***************************************
     //
