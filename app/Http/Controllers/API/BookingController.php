@@ -90,31 +90,53 @@ class BookingController extends Controller
 
     public function store_service_booking(Request $request)
     {
+        
+
         try {
+            $validator = Validator::make($request->all(),[
+                "address" => "required",
+                "client_name" => "required",
+                "client_mobile_number" => "required",
+                "date_time" => "required",
+                "task_type_id" => "required",
+                "type_of_measurement" => "required",
+                "type_of_material" => "required",
+                "payment_mode_id" => "required",
+                
+                
+            ]);
+            if($validator->fails()){
+                return response()->json($validator->errors(), 400);
+            }
 
             $taskTypeData=TaskType::find($request->task_type_id);
             
             $existingRowsCount = Service::count();
             $idNumber = $existingRowsCount + 1;
-            
             $loggedInUser = User::find(auth()->id());
             
             $addNewService = new Service();
-            $addNewService->fill($request->all()); 
-            // $addNewService->address = $request->address;
-            // $addNewService->landmark = $request->landmark;
-            // $addNewService->client_name = $request->client_name;
-            // $addNewService->client_email_address = $request->client_email_address;
-            // $addNewService->client_mobile_number = $request->client_mobile_number;
-            // $addNewService->date_time = $request->date_time;
-            // $addNewService->quantity = $request->quantity;
+            $currentYear = date('Y');
+            $addNewService->service_code = "SCode-{$currentYear}-{$idNumber}";
 
+            $addNewService->address = $request->address;
+            $addNewService->landmark = $request->landmark;
+            $addNewService->client_name = $request->client_name;
+            $addNewService->client_email_address = $request->client_email_address;
+            $addNewService->client_mobile_number = $request->client_mobile_number;
+            $addNewService->date_time = $request->date_time;
+            $addNewService->task_type_id = $request->task_type_id;
+            $addNewService->type_of_measurement = $request->type_of_measurement;
+            $addNewService->type_of_material = $request->type_of_material;
+            $addNewService->quantity = $request->quantity;
+            $addNewService->payment_mode_id = $request->payment_mode_id;
+            $addNewService->remarks = $request->remarks;
+            $addNewService->notes = $request->notes;
+            $addNewService->coordinate = $request->coordinate; 
+            $addNewService->created_by_user_id = auth()->id();
+            
             $addNewService->save();
     
-            $currentYear = date('Y');
-            
-            $addNewService->service_code = "SCode-{$currentYear}-{$idNumber}";
-            $addNewService->created_by_user_id = auth()->id();
     
             if($loggedInUser->employee_of_dealer_id != null){
                 $addNewService->employee_of = $loggedInUser->employee_of_dealer_id;
@@ -314,7 +336,15 @@ class BookingController extends Controller
     public function update_booked_service(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            "task_type_id" => "required",
+                "address" => "required",
+                "client_name" => "required",
+                "client_mobile_number" => "required",
+                "date_time" => "required",
+                "task_type_id" => "required",
+                "type_of_measurement" => "required",
+                "type_of_material" => "required",
+                "payment_mode_id" => "required",
+       
         ]);
 
         if($validator->fails()){
@@ -333,19 +363,22 @@ class BookingController extends Controller
 
         try {
         $serviceUpdate->address = $request->address;
+        $serviceUpdate->landmark = $request->landmark;
         $serviceUpdate->client_name = $request->client_name;
         $serviceUpdate->client_email_address = $request->client_email_address;
         $serviceUpdate->client_mobile_number = $request->client_mobile_number;
         $serviceUpdate->date_time = $request->date_time;
         $serviceUpdate->task_type_id = $request->task_type_id;
         $serviceUpdate->type_of_measurement = $request->type_of_measurement;   
-        $serviceUpdate->type_of_material = $request->type_of_material;    
+        $serviceUpdate->type_of_material = $request->type_of_material;
+        $serviceUpdate->quantity = $request->quantity;     
         $serviceUpdate->payment_mode_id = $request->payment_mode_id;
         $serviceUpdate->remarks = $request->remarks;
         $serviceUpdate->notes = $request->notes; 
-        $serviceUpdate->coordinate = $request->coordinate;   
-        $serviceUpdate->landmark = $request->landmark;
-        $serviceUpdate->quantity = $request->quantity;    
+        if($request->coordinate != null){
+            $serviceUpdate->coordinate = $request->coordinate; 
+        }
+        
         $serviceUpdate->save();
 
         

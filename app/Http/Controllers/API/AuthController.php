@@ -234,7 +234,7 @@ class AuthController extends Controller
     {
         return Auth::guard('api');
     }
-
+    
     public function nearest_service_center(Request $request){
         
         $lat = $request->latitude;
@@ -258,6 +258,9 @@ class AuthController extends Controller
             "items" => $data
         ], 200);
     }
+    
+
+       
 
     
 }
